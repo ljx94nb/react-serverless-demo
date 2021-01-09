@@ -1,4 +1,3 @@
-export * from './Home'
-export * from './FunctionDemo'
-export * from './DatabaseDemo'
+export * from './home'
 export * from './404'
+export * from './login'

@@ -1,24 +1,17 @@
 import React from 'react'
-import { Switch, Route, RouteProps } from 'react-router-dom'
-import { appRoutes } from './config'
-export * from './config'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
+import { Login, Home } from '@/pages'
 
-function SwitchRoutes(appRoutes: RouteProps[]) {
+function Router() {
   return (
-    <Switch>
-      {appRoutes.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          component={route.component}
-          exact={route.exact || true}
-          strict={route.strict || false}
-        />
-      ))}
-    </Switch>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/login" component={Login} exact />
+        <Route path="/home" component={Home} exact />
+        <Redirect to="/login" />
+      </Switch>
+    </BrowserRouter>
   )
 }
 
-export function RenderRoutes() {
-  return SwitchRoutes(appRoutes)
-}
+export default Router

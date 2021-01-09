@@ -5,11 +5,19 @@
   "functionRoot": "functions",
   "functions": [
     {
-      "name": "custom-login",
+      "name": "find_bike",
       "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
     },
     {
-      "name": "base64",
+      "name": "find_user",
+      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+    },
+    {
+      "name": "login",
+      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+    },
+    {
+      "name": "register",
       "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
     }
   ],

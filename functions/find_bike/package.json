@@ -1,12 +1,12 @@
 {
-  "name": "custom-login",
+  "name": "find_bike",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "cwuyiqing@gmail.com",
+  "author": "1771224520@qq.com",
   "license": "ISC",
   "dependencies": {
     "tcb-admin-node": "1.10.0"
