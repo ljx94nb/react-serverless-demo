@@ -1,28 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 // import { observer, inject } from 'mobx-react'
-import { Form, Input, Button, message } from 'antd'
-import { loginForm } from '@/interface/login_interface'
-import { MESSAGE_CONFIG } from '@/config/message_config'
-import { storage, getApp } from '@/utils'
-import jwt_decode from 'jwt-decode'
-import './index.less'
+import { Form, Input, Button, message } from 'antd';
+import { loginForm } from '@/interface/login_interface';
+import { MESSAGE_CONFIG } from '@/config/message_config';
+import { storage, getApp } from '@/utils';
+import jwt_decode from 'jwt-decode';
 
 interface Iprops {
-  history: any
+  history: any;
 }
 
 // @inject('homeStore')
 // @observer
 export const Login = (props: Iprops) => {
-  const [loading, setLoading] = useState(false)
-  const [btnText, setBtnText] = useState('登录')
+  const [loading, setLoading] = useState(false);
+  const [btnText, setBtnText] = useState('登录');
 
-  const token = storage.get('token')
+  const token = storage.get('token');
   if (token) {
-    const decode = jwt_decode(token)
+    const decode = jwt_decode(token);
     // console.log(decode)
-    props.history.push({ pathname: '/home', state: decode })
-    return null
+    props.history.push({ pathname: '/home', state: decode });
+    return null;
   }
 
   /**
@@ -32,9 +31,9 @@ export const Login = (props: Iprops) => {
    * @version 2020-09-15 17:54:29 星期二
    */
   const onFinish = async (form: loginForm, btnText: string) => {
-    let { username, password } = form
-    const app = getApp()
-    setLoading(true)
+    let { username, password } = form;
+    const app = getApp();
+    setLoading(true);
     if (btnText === '登录') {
       const res = await app.callFunction({
         name: 'login',
@@ -42,18 +41,19 @@ export const Login = (props: Iprops) => {
           username,
           password
         }
-      })
+      });
       // console.log(res)
       if (res.result.length) {
-        const user = res.result[0]
+        const user = res.result[0];
         // 将用户姓名存入localStorage并提示登录成功
-        storage.set('token', user.token)
-        message.success(MESSAGE_CONFIG.logoSuccess)
+        storage.set('token', user.token);
+        storage.set('username', user.username);
+        message.success(MESSAGE_CONFIG.logoSuccess);
         // 跳转到home页
-        const decode = jwt_decode(user.token)
-        props.history.push({ pathname: '/home', state: decode })
+        const decode = jwt_decode(user.token);
+        props.history.push({ pathname: '/home', state: decode });
       } else {
-        message.error(res.result.message)
+        message.error(res.result.message);
       }
     } else {
       const res = await app.callFunction({
@@ -61,9 +61,9 @@ export const Login = (props: Iprops) => {
         data: {
           username
         }
-      })
+      });
       if (res.result.length) {
-        message.error('该账号已存在!')
+        message.error('该账号已存在!');
       } else {
         try {
           await app.callFunction({
@@ -72,25 +72,25 @@ export const Login = (props: Iprops) => {
               username,
               password
             }
-          })
-          message.success('注册成功，请点击登录按钮进行登录~')
-          setBtnText('登录')
+          });
+          message.success('注册成功，请点击登录按钮进行登录~');
+          setBtnText('登录');
         } catch (err) {
-          message.error('注册失败!')
+          message.error('注册失败!');
         }
       }
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   // 管理员注册
   const registerUser = () => {
-    setBtnText('注册')
-  }
+    setBtnText('注册');
+  };
 
   const backToLogin = () => {
-    setBtnText('登录')
-  }
+    setBtnText('登录');
+  };
 
   return (
     <div id="login">
@@ -128,9 +128,9 @@ export const Login = (props: Iprops) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve()
+                    return Promise.resolve();
                   }
-                  return Promise.reject(new Error('两次密码输入不一致!'))
+                  return Promise.reject(new Error('两次密码输入不一致!'));
                 }
               })
             ]}
@@ -155,5 +155,5 @@ export const Login = (props: Iprops) => {
         </a>
       )}
     </div>
-  )
-}
+  );
+};
