@@ -6,31 +6,46 @@
 
 // 设置项接口
 export interface SettingItem {
-  title: string
-  checkedChildren: string
-  unCheckedChildren: string
-  event: string
-  defaultValue: boolean
+  title: string;
+  checkedChildren: string;
+  unCheckedChildren: string;
+  event: string;
+  defaultValue: boolean;
 }
 
 // 导航接口
 export interface NavItem {
-  [prop: string]: any
+  [prop: string]: any;
 }
 
 // 标签页接口
 export interface TabItem {
-  title: string
-  content: string
-  key: string
-  path: string
+  title: string;
+  content: string;
+  key: string;
+  path: string;
 }
 
 // 图标字体接口
 export interface IconItem {
-  font_class: string
-  icon_id: string
-  name: string
-  unicode: string
-  unicode_decimal: number
+  font_class: string;
+  icon_id: string;
+  name: string;
+  unicode: string;
+  unicode_decimal: number;
+}
+
+// 单车数据接口
+export interface IBikeData {
+  _id: string;
+  bikeid: number;
+  end_location: string;
+  end_time: string;
+  end_time_num: number;
+  orderid: number;
+  start_location: string;
+  start_time: string;
+  start_time_num: number;
+  userid: number;
+  track: string;
 }
