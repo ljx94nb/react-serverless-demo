@@ -24,11 +24,14 @@ class HomeStore {
       for (const item of data) {
         item['start_time_num'] = new Date(item.start_time).getTime();
         item['end_time_num'] = new Date(item.end_time).getTime();
-        console.log(
-          await requestAddress({ location: item.start_location_y + ',' + item.start_location_x })
-        );
-        item['start_location'] = '';
-        item['end_location'] = '';
+        const startLocation = await requestAddress({
+          location: item.start_location_y + ',' + item.start_location_x
+        });
+        const endLocation = await requestAddress({
+          location: item.end_location_y + ',' + item.end_location_x
+        });
+        item['start_location'] = startLocation;
+        item['end_location'] = endLocation;
       }
       this.bike_data = data;
     } catch (error) {

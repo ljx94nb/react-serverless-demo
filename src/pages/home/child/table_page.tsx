@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Table, message } from 'antd';
 import { IBikeData } from '@/interface';
-import { observer } from 'mobx-react';
-import { inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 
 interface Props {
   homeStore: any;
@@ -59,7 +58,7 @@ const columns: any = [
 
 @inject('homeStore')
 @observer
-export default class TablePage extends Component<Props, State> {
+class TablePage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -74,7 +73,7 @@ export default class TablePage extends Component<Props, State> {
 
   async handleMounted() {
     try {
-      await this.props.homeStore.getBikeData(2, 20);
+      await this.props.homeStore.getBikeData(0, 20);
     } catch (error) {
       message.error('数据加载失败');
     } finally {
@@ -102,3 +101,5 @@ export default class TablePage extends Component<Props, State> {
     );
   };
 }
+
+export default TablePage;
