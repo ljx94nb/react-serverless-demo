@@ -1,105 +1,35 @@
-import React, { Component } from 'react';
-import { TabItem } from '../../../interface/home_interface';
-import ReactEcharts from 'echarts-for-react';
-import { Modal } from 'antd';
-import { echartsList } from '@/config';
+import React from 'react';
+import { Line } from '@ant-design/charts';
 
-interface Props {
-  prop: TabItem;
-}
+const Page: React.FC = () => {
+  const data = [
+    { year: '1991', value: 3 },
+    { year: '1992', value: 4 },
+    { year: '1993', value: 3.5 },
+    { year: '1994', value: 5 },
+    { year: '1995', value: 4.9 },
+    { year: '1996', value: 6 },
+    { year: '1997', value: 7 },
+    { year: '1998', value: 9 },
+    { year: '1999', value: 13 }
+  ];
 
-interface State {
-  visible: boolean;
-  modalWidth: number;
-  echartsDetail: any;
-}
-
-export default class Page extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      visible: false,
-      modalWidth: 1200,
-      echartsDetail: {}
-    };
-  }
-
-  createList(that: any) {
-    console.log(that);
-    return echartsList.map((el: any, index: number) => {
-      return (
-        <li className="echarts-page_list_item" key={index}>
-          <div className="echarts-main_body">
-            <ReactEcharts
-              option={el.option}
-              notMerge={true}
-              lazyUpdate={true}
-              className="echarts-main"
-              theme={'theme_name'}
-            />
-          </div>
-          <p className="echarts-main_title" onClick={() => that.openEachartsDetail(el)}>
-            {el.title}
-          </p>
-        </li>
-      );
-    });
-  }
-
-  openEachartsDetail(details: any) {
-    this.setState({
-      echartsDetail: details
-    });
-
-    this.showModal();
-  }
-
-  render = () => {
-    let { visible, modalWidth, echartsDetail } = this.state;
-    let { handleCancel, createList } = this;
-    let that = this;
-    return (
-      <div className="echarts-page">
-        <ul className="echarts-page_list">{createList(that)}</ul>
-
-        <Modal
-          width={modalWidth}
-          title={echartsDetail.title}
-          visible={visible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <ReactEcharts
-            option={echartsDetail.option}
-            notMerge={true}
-            lazyUpdate={true}
-            className="echarts-main_detail"
-            theme={'theme_name'}
-          />
-        </Modal>
+  const config = {
+    data,
+    xField: 'year',
+    yField: 'value',
+    point: {
+      size: 5,
+      shape: 'diamond'
+    }
+  };
+  return (
+    <div className="echarts-page">
+      <div className="echarts-line">
+        <Line {...config} />
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  /**
-   * @name 点击取消
-   * @author liuguisheng
-   * @version 2020-09-14 16:10:20 星期一
-   */
-  handleCancel = () => {
-    this.setState({
-      visible: false
-    });
-  };
-
-  /**
-   * @name 打开弹窗
-   * @author liuguisheng
-   * @version 2020-09-14 16:09:37 星期一
-   */
-  showModal = () => {
-    this.setState({
-      visible: true
-    });
-  };
-}
+export default Page;

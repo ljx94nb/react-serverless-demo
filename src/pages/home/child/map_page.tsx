@@ -76,10 +76,15 @@ export default class MapPage extends Component<Props, State> {
       this.marker = new window.AMap.Marker({
         map: map,
         position: path[0],
-        icon: 'https://webapi.amap.com/images/car.png',
-        offset: new window.AMap.Pixel(-26, -13),
+        icon: new window.AMap.Icon({
+          size: new window.AMap.Size(50, 50),
+          imageSize: new window.AMap.Size(50, 50),
+          image:
+            'https://6d79-my-serverless-2gk2td9k79b09fc4-1301218476.tcb.qcloud.la/diandongzihangche-cemian.png?sign=1a6ef52d892a9a57d74748bee93aaf56&t=1611071157'
+        }),
+        offset: new window.AMap.Pixel(-26, -32),
         autoRotation: true,
-        angle: -90
+        angle: 0
       });
 
       // 绘制轨迹
