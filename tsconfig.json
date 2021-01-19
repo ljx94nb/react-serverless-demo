@@ -20,7 +20,11 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": ".",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    // 将隐式的any自动转换为显式的
+    "noImplicitAny": false,
+    // 防止严格检查数组未定义类型为never
+    "strictNullChecks": false
   },
   "include": [
     "src"

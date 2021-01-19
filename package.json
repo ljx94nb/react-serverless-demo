@@ -2,6 +2,7 @@
   "name": "rect-demo",
   "version": "0.1.0",
   "dependencies": {
+    "@types/react-highlight-words": "^0.16.1",
     "antd": "^4.4.2",
     "aphrodite": "^2.4.0",
     "axios": "^0.21.1",
@@ -16,6 +17,7 @@
     "react": "^16.13.1",
     "react-amap": "^1.2.8",
     "react-dom": "^16.13.1",
+    "react-highlight-words": "^0.16.0",
     "react-magic": "^0.2.3",
     "react-markdown": "^5.0.3",
     "react-router-dom": "^5.2.0",

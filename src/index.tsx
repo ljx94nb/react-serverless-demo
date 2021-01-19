@@ -9,6 +9,8 @@ import { Provider } from 'mobx-react';
 declare global {
   interface Window {
     tcb: any;
+    indexedDB: any;
+    AMap: any;
   }
 }
 

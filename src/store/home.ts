@@ -18,6 +18,11 @@ class HomeStore {
   }
 
   @action
+  setBikeData(data: any) {
+    this.bike_data = data;
+  }
+
+  @action
   async getBikeData(currPage: number, pageSize: number) {
     try {
       const data = await requestBikeData(currPage, pageSize);
@@ -32,6 +37,7 @@ class HomeStore {
         });
         item['start_location'] = startLocation;
         item['end_location'] = endLocation;
+        item.track = item.track.split('#').map((item) => item.split(',').map((d) => Number(d)));
       }
       this.bike_data = data;
     } catch (error) {
