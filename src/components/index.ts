@@ -5,3 +5,4 @@ export * from './sall_action';
 // export * from './sall_echart';
 export * from './todo_list';
 export * from './wave_component';
+export * from './loading';

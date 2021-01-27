@@ -113,8 +113,12 @@
   width: 100%;
   height: 100%;
 
-  .echarts-line {
-    width: 800px;
+  .line-container {
+    position: relative;
+  }
+
+  .line-map {
+    width: 1000px;
     height: 400px;
   }
 }

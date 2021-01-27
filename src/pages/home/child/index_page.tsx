@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { WaveComponent, TodoList, SallAction, QuickEntry } from '../../../components';
+import { WaveComponent, SallAction, QuickEntry } from '../../../components';
 import { storage } from '../../../utils/storage_utils';
 
 const WEEK_CONFIG = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
@@ -27,7 +27,7 @@ export default class IndexPage extends Component<Props, State> {
   private countTodayTips = () => {
     let name = storage.get('username');
     let amOrPm: string = new Date().getHours() > 12 ? '下午好' : '上午好';
-    let week: string = WEEK_CONFIG[new Date().getDay()];
+    let week: string = WEEK_CONFIG[new Date().getDay() - 1];
     let time: string = new Date().toLocaleDateString();
     let tips: string = CHEERS[Math.floor(Math.random() * CHEERS.length)];
 
@@ -74,10 +74,6 @@ export default class IndexPage extends Component<Props, State> {
         <div className="main-body">
           <div className="sall-action-body">
             <SallAction></SallAction>
-          </div>
-          <div className="sall-echart">{/* <SallEchart></SallEchart> */}</div>
-          <div className="todo-list-body">
-            <TodoList></TodoList>
           </div>
         </div>
       </div>

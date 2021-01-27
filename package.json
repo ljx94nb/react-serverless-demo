@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "@ant-design/charts": "^1.0.13",
+    "@antv/l7": "^2.3.7",
+    "@antv/l7-maps": "^2.3.7",
     "@types/react-highlight-words": "^0.16.1",
     "antd": "^4.4.2",
     "aphrodite": "^2.4.0",
@@ -14,6 +16,7 @@
     "jwt-decode": "^2.2.0",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
+    "moment": "^2.29.1",
     "node-sass": "npm:dart-sass@^1.25.0",
     "react": "^16.13.1",
     "react-amap": "^1.2.8",

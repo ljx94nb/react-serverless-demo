@@ -4,6 +4,7 @@ import { SETTING_ITEM_CONFIG } from '@/config';
 import GlobalConfigStore from '@/store/global_config';
 import { observer, inject } from 'mobx-react';
 import { SettingOutlined } from '@ant-design/icons';
+import { storage } from '@/utils';
 
 interface Props {
   globalConfigStore: GlobalConfigStore;
@@ -61,10 +62,21 @@ export class GlobleSetting extends Component<Props, State> {
         >
           {/* 配置列表 */}
           {createConfigComponent()}
+          <Button type="link" size="small" onClick={this.signOut}>
+            退出登录
+          </Button>
         </Modal>
       </div>
     );
   }
+
+  /**
+   * 退出登录
+   */
+  signOut = () => {
+    storage.set('token', '');
+    window.location.reload();
+  };
 
   /**
    * @name 打开弹窗

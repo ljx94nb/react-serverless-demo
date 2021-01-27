@@ -236,6 +236,7 @@ class TablePage extends Component<Props, State> {
       <div className="table-page">
         <div className="table-page-header">
           <span>请选择所要展示的区间：</span>
+          {loading ? null : (
           <Select defaultValue="1—100" onChange={this.handleSelect} style={{ width: '30%' }}>
             {pageCut.map((item: string, index) => (
               <Option value={item} key={index}>
@@ -243,6 +244,7 @@ class TablePage extends Component<Props, State> {
               </Option>
             ))}
           </Select>
+          )}
         </div>
         <div className="table-page_body">
           <Table
