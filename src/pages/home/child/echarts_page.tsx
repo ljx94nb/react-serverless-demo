@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import { Line } from '@ant-design/charts';
+import { Line, WordCloud } from '@ant-design/charts';
 import { Scene, HeatmapLayer } from '@antv/l7';
-import { GaodeMap } from '@antv/l7-maps';
+import { Mapbox } from '@antv/l7-maps';
 import { inject, observer } from 'mobx-react';
 import { Loading } from '@/components';
 
@@ -34,13 +34,40 @@ const Page = (props: IProps) => {
     // }
   };
 
+  const [cloudData, setCloudData] = useState([]);
+  useEffect(() => {
+    asyncFetch();
+  }, []);
+  const asyncFetch = () => {
+    fetch('/mock/cloudmapData.json')
+      .then((response) => response.json())
+      .then((json) => setCloudData(json))
+      .catch((error) => {
+        console.log('fetch cloudData failed', error);
+      });
+  };
+  const cloudConfig = {
+    data: cloudData,
+    wordField: 'name',
+    weightField: 'value',
+    colorField: 'name',
+    wordStyle: {
+      fontFamily: 'Verdana',
+      fontSize: [8, 32],
+      rotation: 0
+    },
+    random: function random() {
+      return 0.5;
+    }
+  };
+
   useEffect(() => {
     const scene = new Scene({
       id: 'map',
-      map: new GaodeMap({
+      map: new Mapbox({
         style: 'dark',
         pitch: 0,
-        center: [121.483415, 31.232471],
+        center: [121.46, 31.224],
         zoom: 12
       })
     });
@@ -105,6 +132,9 @@ const Page = (props: IProps) => {
           <Line {...config} />
         </div>
         {loading ? <Loading /> : null}
+      </div>
+      <div className="cloudMap-container">
+        <WordCloud {...cloudConfig} />
       </div>
       <div style={{ width: '1200px', height: '400px', position: 'relative' }} id="map" />
     </div>

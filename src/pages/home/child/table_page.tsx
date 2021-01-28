@@ -54,7 +54,7 @@ class TablePage extends Component<Props, State> {
     this.handleMounted();
   }
 
-  async handleMounted() {
+  async handleMounted(preDistrictName = districtionArr[0]) {
     const { districtName } = this.state;
     try {
       try {
@@ -66,6 +66,9 @@ class TablePage extends Component<Props, State> {
       }
     } catch (error) {
       message.error('数据加载失败');
+      this.setState({
+        districtName: preDistrictName
+      });
     } finally {
       this.setState({
         loading: false
@@ -75,6 +78,7 @@ class TablePage extends Component<Props, State> {
 
   // 选择框选中选项的时候调用此函数
   handleSelect = async (e: any) => {
+    const preDistrictName = this.state.districtName;
     this.setState({
       loading: true
     });
@@ -83,7 +87,7 @@ class TablePage extends Component<Props, State> {
         districtName: e
       },
       () => {
-        this.handleMounted();
+        this.handleMounted(preDistrictName);
       }
     );
   };
@@ -97,6 +101,13 @@ class TablePage extends Component<Props, State> {
       }
     });
     // console.log(res);
+    res.result.forEach((item) => {
+      if (item.track.length > 3)
+        item.track =
+          item.track.length % 2 !== 0
+            ? item.track.filter((item, i) => i % 2 === 0).filter((item, i) => i % 2 === 0)
+            : item.track.filter((item, i) => i % 2 !== 0).filter((item, i) => i % 2 !== 0);
+    });
     this.props.homeStore.setBikeData(res.result);
   };
 
@@ -234,7 +245,7 @@ class TablePage extends Component<Props, State> {
       {
         title: 'Action',
         render: (text, record) => (
-          <a href="javascript:void(0)" onClick={() => this.lookPath(record)}>
+          <a href="javascript:void(0);" onClick={() => this.lookPath(record)}>
             查看路线 · {record.distance}
           </a>
         )

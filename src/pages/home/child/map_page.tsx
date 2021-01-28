@@ -10,6 +10,7 @@ interface Props {
 interface State {
   mapPlugins: string[];
   map: any;
+  center: { longitude: number; latitude: number };
 }
 
 const YOUR_AMAP_KEY = '5d8a8dd1fcc6c74b4f7217e311e046c0';
@@ -20,7 +21,8 @@ export default class MapPage extends Component<Props, State> {
 
     this.state = {
       map: null,
-      mapPlugins: ['Scale', 'MapType', 'OverView']
+      mapPlugins: ['Scale', 'MapType', 'OverView'],
+      center: { longitude: 121.46, latitude: 31.224 }
     };
   }
 
@@ -83,8 +85,7 @@ export default class MapPage extends Component<Props, State> {
         icon: new window.AMap.Icon({
           size: new window.AMap.Size(50, 50),
           imageSize: new window.AMap.Size(50, 50),
-          image:
-            'https://6d79-my-serverless-2gk2td9k79b09fc4-1301218476.tcb.qcloud.la/diandongzihangche-cemian.png?sign=1a6ef52d892a9a57d74748bee93aaf56&t=1611071157'
+          image: '/diandongche.png'
         }),
         offset: new window.AMap.Pixel(-26, -32),
         autoRotation: true,
@@ -126,7 +127,7 @@ export default class MapPage extends Component<Props, State> {
   }
 
   render() {
-    const { mapPlugins } = this.state;
+    const { mapPlugins, center } = this.state;
     const { zoom } = this.props;
 
     return (
@@ -137,6 +138,7 @@ export default class MapPage extends Component<Props, State> {
           version={VERSION}
           zoom={zoom}
           events={this.amapEvents}
+          center={center}
         />
         <Radio.Group className="btn-group" onChange={this.handleAnimationChange}>
           <Radio.Button value="start">开始动画</Radio.Button>
