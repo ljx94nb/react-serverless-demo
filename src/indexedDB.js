@@ -14,16 +14,16 @@ request.onupgradeneeded = function (e) {
   db = e.target.result;
   let objectStore = null;
   if (!db.objectStoreNames.contains('bike_data')) {
-    objectStore = db.createObjectStore('bike_data', { keyPath: 'currPage' });
+    objectStore = db.createObjectStore('bike_data', { keyPath: 'districtName' });
   }
 };
 
 export function addInDB(options) {
-  const { currPage, data } = options;
+  const { districtName, data } = options;
   const request = db
     .transaction(['bike_data'], 'readwrite')
     .objectStore('bike_data')
-    .add({ currPage, data });
+    .add({ districtName, data });
 
   request.onsuccess = function (e) {
     console.log('数据写入成功');
@@ -34,11 +34,11 @@ export function addInDB(options) {
   };
 }
 
-export function readInDB(currPage) {
+export function readInDB(districtName) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(['bike_data']);
     const objectStore = transaction.objectStore('bike_data');
-    const request = objectStore.get(currPage);
+    const request = objectStore.get(districtName);
 
     request.onerror = function (e) {
       reject('获取数据失败');

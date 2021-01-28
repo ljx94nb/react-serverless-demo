@@ -6,6 +6,10 @@ import { addInDB, readInDB } from '@/indexedDB';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import Map from './map_page';
+import { getApp } from '@/utils';
+import { districtName } from '@/config';
+
+const app = getApp();
 
 interface Props {
   homeStore: any;
@@ -20,13 +24,11 @@ interface State {
   path: [][];
   zoom: number;
   rowId: string;
+  districtName: string;
 }
 
 const { Option } = Select;
-const pageCut: string[] = [];
-for (let i = 0; i <= 100000; i = i + 100) {
-  pageCut.push(`${i + 1}—${i + 100}`);
-}
+const districtionArr: string[] = districtName;
 
 @inject('homeStore')
 @observer
@@ -42,7 +44,8 @@ class TablePage extends Component<Props, State> {
       searchedColumn: '',
       path: [],
       zoom: 12,
-      rowId: ''
+      rowId: '',
+      districtName: districtionArr[0]
     };
   }
   private searchInput: any;
@@ -52,14 +55,14 @@ class TablePage extends Component<Props, State> {
   }
 
   async handleMounted() {
-    const { currPage, pageSize } = this.state;
+    const { districtName } = this.state;
     try {
       try {
-        const buffer = await readInDB(currPage);
+        const buffer = await readInDB(districtName);
         this.props.homeStore.setBikeData(buffer);
       } catch (err) {
-        await this.props.homeStore.getBikeData(currPage, pageSize);
-        addInDB({ currPage, data: this.props.homeStore.bike_data });
+        await this.handleDistricNameSelect(districtName);
+        addInDB({ districtName, data: this.props.homeStore.bike_data });
       }
     } catch (error) {
       message.error('数据加载失败');
@@ -71,19 +74,30 @@ class TablePage extends Component<Props, State> {
   }
 
   // 选择框选中选项的时候调用此函数
-  handleSelect = (e: any) => {
+  handleSelect = async (e: any) => {
     this.setState({
       loading: true
     });
-    const arr = e.split('—');
     this.setState(
       {
-        currPage: Number(arr[1]) / 100 - 1
+        districtName: e
       },
       () => {
         this.handleMounted();
       }
     );
+  };
+
+  // 按照行政区规划请求数据
+  handleDistricNameSelect = async (districtName) => {
+    const res = await app.callFunction({
+      name: 'find_bike_by_district',
+      data: {
+        district: districtName
+      }
+    });
+    // console.log(res);
+    this.props.homeStore.setBikeData(res.result);
   };
 
   // 筛选功能
@@ -120,8 +134,11 @@ class TablePage extends Component<Props, State> {
       <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+      record[dataIndex] || record[dataIndex[0]][dataIndex[1]]
+        ? (record[dataIndex] || record[dataIndex[0]][dataIndex[1]])
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : '',
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
@@ -129,7 +146,7 @@ class TablePage extends Component<Props, State> {
       }
     },
     render: (text) =>
-      this.state.searchedColumn === dataIndex ? (
+      String(this.state.searchedColumn) === String(dataIndex) ? (
         <Highlighter
           highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[this.state.searchText]}
@@ -171,62 +188,54 @@ class TablePage extends Component<Props, State> {
   };
 
   render = () => {
-    const { loading, path, zoom } = this.state;
+    const { loading, path, zoom, districtName } = this.state;
     const { homeStore } = this.props;
     const columns: any = [
       {
         title: '订单号',
         dataIndex: 'orderid',
-        key: 'orderid',
         ...this.getColumnSearchProps('orderid'),
         sorter: (a: IBikeData, b: IBikeData) => Number(a.orderid) - Number(b.orderid)
       },
       {
         title: '单车号',
         dataIndex: 'bikeid',
-        key: 'bikeid',
         ...this.getColumnSearchProps('bikeid'),
         sorter: (a: IBikeData, b: IBikeData) => Number(a.bikeid) - Number(b.bikeid)
       },
       {
         title: '用户id',
         dataIndex: 'userid',
-        key: 'userid',
         ...this.getColumnSearchProps('userid'),
         sorter: (a: IBikeData, b: IBikeData) => Number(a.userid) - Number(b.userid)
       },
       {
         title: '出发时间',
         dataIndex: 'start_time',
-        key: 'start_time',
         ...this.getColumnSearchProps('start_time'),
         sorter: (a: IBikeData, b: IBikeData) => a.start_time_num - b.start_time_num
       },
       {
         title: '出发地点',
-        dataIndex: 'start_location',
-        key: 'start_location',
-        ...this.getColumnSearchProps('start_location')
+        dataIndex: ['start_location', 'formatted_address'],
+        ...this.getColumnSearchProps(['start_location', 'formatted_address'])
       },
       {
         title: '到达时间',
         dataIndex: 'end_time',
-        key: 'end_time',
         ...this.getColumnSearchProps('end_time'),
         sorter: (a: IBikeData, b: IBikeData) => a.end_time_num - b.end_time_num
       },
       {
         title: '到达地点',
-        dataIndex: 'end_location',
-        key: 'end_location',
-        ...this.getColumnSearchProps('end_location')
+        dataIndex: ['end_location', 'formatted_address'],
+        ...this.getColumnSearchProps(['end_location', 'formatted_address'])
       },
       {
         title: 'Action',
-        key: 'action',
         render: (text, record) => (
           <a href="javascript:void(0)" onClick={() => this.lookPath(record)}>
-            查看路线
+            查看路线 · {record.distance}
           </a>
         )
       }
@@ -235,15 +244,19 @@ class TablePage extends Component<Props, State> {
     return (
       <div className="table-page">
         <div className="table-page-header">
-          <span>请选择所要展示的区间：</span>
+          <span>行政区域：</span>
           {loading ? null : (
-          <Select defaultValue="1—100" onChange={this.handleSelect} style={{ width: '30%' }}>
-            {pageCut.map((item: string, index) => (
-              <Option value={item} key={index}>
-                {item}
-              </Option>
-            ))}
-          </Select>
+            <Select
+              defaultValue={districtName}
+              onChange={this.handleSelect}
+              style={{ width: '10%' }}
+            >
+              {districtionArr.map((item: string, index) => (
+                <Option value={item} key={index}>
+                  {item}
+                </Option>
+              ))}
+            </Select>
           )}
         </div>
         <div className="table-page_body">

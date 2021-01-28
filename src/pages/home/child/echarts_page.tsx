@@ -18,10 +18,20 @@ const Page = (props: IProps) => {
     data,
     xField: 'hour',
     yField: 'value',
+    seriesField: 'name',
+    label: {},
     point: {
       size: 5,
       shape: 'diamond'
-    }
+    },
+    legend: { position: 'top' },
+    smooth: true
+    // animation: {
+    //   appear: {
+    //     animation: 'path-in',
+    //     duration: 5000
+    //   }
+    // }
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Map } from 'react-amap';
-import { Radio } from 'antd';
+import { message, Radio } from 'antd';
 
 interface Props {
   path: [][];
@@ -52,19 +52,23 @@ export default class MapPage extends Component<Props, State> {
   handleAnimationChange = (e) => {
     const value = e.target.value;
     const { path } = this.props;
-    switch (value) {
-      case 'start':
-        this.startAnimation(this.marker, path);
-        break;
-      case 'pause':
-        this.pauseAnimation(this.marker);
-        break;
-      case 'resume':
-        this.resumeAnimation(this.marker);
-        break;
-      case 'stop':
-        this.stopAnimation(this.marker);
-        break;
+    try {
+      switch (value) {
+        case 'start':
+          this.startAnimation(this.marker, path);
+          break;
+        case 'pause':
+          this.pauseAnimation(this.marker);
+          break;
+        case 'resume':
+          this.resumeAnimation(this.marker);
+          break;
+        case 'stop':
+          this.stopAnimation(this.marker);
+          break;
+      }
+    } catch (error) {
+      message.error('请先点击查看路线');
     }
   };
 

@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { requestBikeData, requestAddress, requestUserCount } from '@/api';
+import { requestUserCount } from '@/api';
 
 class HomeStore {
   @observable
@@ -49,34 +49,12 @@ class HomeStore {
   }
 
   @action
-  async getBikeData(currPage: number, pageSize: number) {
-    try {
-      const data = await requestBikeData(currPage, pageSize);
-      for (const item of data) {
-        item['start_time_num'] = new Date(item.start_time).getTime();
-        item['end_time_num'] = new Date(item.end_time).getTime();
-        const startLocation = await requestAddress({
-          location: item.start_location_y + ',' + item.start_location_x
-        });
-        const endLocation = await requestAddress({
-          location: item.end_location_y + ',' + item.end_location_x
-        });
-        item['start_location'] = startLocation;
-        item['end_location'] = endLocation;
-        item.track = item.track.split('#').map((item) => item.split(',').map((d) => Number(d)));
-      }
-      this.bike_data = data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @action
   async setLineData(dateStr) {
     const countArr = await requestUserCount({ dateStr });
     this.line_data = this.line_data.map((item, index) => ({
       hour: item.hour,
-      value: countArr[index]
+      value: countArr[index],
+      name: '人数'
     }));
   }
 }
