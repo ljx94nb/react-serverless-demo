@@ -110,9 +110,9 @@ const Page = (props: IProps) => {
         <CloudWords
           requestUrl="/mock/dayCloudmapData.json"
           dataIndex={dataIndex}
-          fontSize={[6, 24]}
+          fontSize={[8, 32]}
           width="600px"
-          height="300px"
+          height="400px"
         />
         {loading ? <Loading /> : null}
       </div>
