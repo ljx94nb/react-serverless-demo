@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { WaveComponent, SallAction, QuickEntry } from '../../../components';
+import { WaveComponent, HotPlace, QuickEntry } from '../../../components';
 import { storage } from '../../../utils/storage_utils';
 
 const WEEK_CONFIG = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
@@ -73,7 +73,7 @@ export default class IndexPage extends Component<Props, State> {
         </div>
         <div className="main-body">
           <div className="sall-action-body">
-            <SallAction></SallAction>
+            <HotPlace />
           </div>
         </div>
       </div>

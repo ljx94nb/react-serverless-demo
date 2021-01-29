@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import { Line, WordCloud } from '@ant-design/charts';
+import { Line } from '@ant-design/charts';
 import { Scene, HeatmapLayer } from '@antv/l7';
 import { Mapbox } from '@antv/l7-maps';
 import { inject, observer } from 'mobx-react';
-import { Loading } from '@/components';
+import { Loading, CloudWords } from '@/components';
 
 interface IProps {
   homeStore: any;
 }
 
 const Page = (props: IProps) => {
+  const [dataIndex, setDataIndex] = useState(1);
   const [loading, setLoading] = useState(true);
   const data = props.homeStore.line_data;
   const config = {
@@ -32,33 +33,6 @@ const Page = (props: IProps) => {
     //     duration: 5000
     //   }
     // }
-  };
-
-  const [cloudData, setCloudData] = useState([]);
-  useEffect(() => {
-    asyncFetch();
-  }, []);
-  const asyncFetch = () => {
-    fetch('/mock/cloudmapData.json')
-      .then((response) => response.json())
-      .then((json) => setCloudData(json))
-      .catch((error) => {
-        console.log('fetch cloudData failed', error);
-      });
-  };
-  const cloudConfig = {
-    data: cloudData,
-    wordField: 'name',
-    weightField: 'value',
-    colorField: 'name',
-    wordStyle: {
-      fontFamily: 'Verdana',
-      fontSize: [8, 32],
-      rotation: 0
-    },
-    random: function random() {
-      return 0.5;
-    }
   };
 
   useEffect(() => {
@@ -108,6 +82,8 @@ const Page = (props: IProps) => {
 
   const onChange = async (date, dateStr) => {
     setLoading(true);
+    const day = Number(dateStr.split('-')[2]);
+    setDataIndex(day);
     await props.homeStore.setLineData(dateStr);
     setLoading(false);
   };
@@ -121,20 +97,24 @@ const Page = (props: IProps) => {
 
   return (
     <div className="echarts-page">
+      <DatePicker
+        onChange={onChange}
+        showToday={false}
+        disabledDate={disabledDate}
+        defaultValue={moment('2016-08-01', 'YYYY-MM-DD')}
+      />
       <div className="line-container">
-        <DatePicker
-          onChange={onChange}
-          showToday={false}
-          disabledDate={disabledDate}
-          defaultValue={moment('2016-08-01', 'YYYY-MM-DD')}
-        />
         <div className="line-map">
           <Line {...config} />
         </div>
+        <CloudWords
+          requestUrl="/mock/dayCloudmapData.json"
+          dataIndex={dataIndex}
+          fontSize={[6, 24]}
+          width="600px"
+          height="300px"
+        />
         {loading ? <Loading /> : null}
-      </div>
-      <div className="cloudMap-container">
-        <WordCloud {...cloudConfig} />
       </div>
       <div style={{ width: '1200px', height: '400px', position: 'relative' }} id="map" />
     </div>
