@@ -157,6 +157,7 @@ function HomeFn(props: Iprops) {
     action: 'add' | 'remove'
   ) => {
     if (action === 'remove') {
+      console.log(targetKey);
       // 找到删除的索引
       let removeIndex: number = INITIAL_PANES.findIndex((el) => el.key === targetKey);
       // 判断并生成激活的key

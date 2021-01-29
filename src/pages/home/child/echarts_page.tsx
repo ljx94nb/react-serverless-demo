@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-import { Line } from '@ant-design/charts';
+import { DualAxes } from '@ant-design/charts';
 import { Scene, HeatmapLayer } from '@antv/l7';
 import { Mapbox } from '@antv/l7-maps';
 import { inject, observer } from 'mobx-react';
@@ -16,23 +16,76 @@ const Page = (props: IProps) => {
   const [loading, setLoading] = useState(true);
   const data = props.homeStore.line_data;
   const config = {
-    data,
+    data: [data, data],
     xField: 'hour',
-    yField: 'value',
-    seriesField: 'name',
-    label: {},
-    point: {
-      size: 5,
-      shape: 'diamond'
+    yField: ['userCount', 'length'],
+    meta: {
+      length: {
+        alias: '出行距离',
+        formatter: function formatter(v) {
+          return Number(v.toFixed(2));
+        }
+      },
+      userCount: {
+        alias: '出行人数'
+      }
     },
-    legend: { position: 'top' },
-    smooth: true
-    // animation: {
-    //   appear: {
-    //     animation: 'path-in',
-    //     duration: 5000
-    //   }
-    // }
+    geometryOptions: [
+      {
+        geometry: 'column',
+        color: '#5B8FF9'
+      },
+      {
+        geometry: 'line',
+        smooth: true,
+        color: '#5AD8A6',
+        lineStyle: {
+          lineWidth: 4,
+          opacity: 0.8
+        },
+        label: {},
+        point: {
+          shape: 'circle',
+          size: 4,
+          style: {
+            opacity: 0.5,
+            stroke: '#5AD8A6',
+            fill: '#fff'
+          }
+        }
+      }
+    ],
+    xAxis: {
+      label: {
+        autoRotate: false,
+        autoHide: false,
+        autoEllipsis: false
+      },
+      tickCount: data.length / 2
+    },
+    yAxis: {
+      length: {
+        label: {
+          formatter: function formatter(v) {
+            return ''.concat(v, 'km');
+          }
+        }
+      },
+      userCount: {
+        label: {
+          formatter: function formatter(v) {
+            return ''.concat(v, '人');
+          }
+        }
+      }
+    },
+    legend: {
+      itemName: {
+        formatter: function formatter(text, item) {
+          return item.value === 'length' ? '出行距离(km)' : '出行人数(人)';
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -78,7 +131,7 @@ const Page = (props: IProps) => {
     props.homeStore.setLineData('2016-08-01').then(() => {
       setLoading(false);
     });
-  }, [props.homeStore.line_data]);
+  }, []);
 
   const onChange = async (date, dateStr) => {
     setLoading(true);
@@ -105,7 +158,7 @@ const Page = (props: IProps) => {
       />
       <div className="line-container">
         <div className="line-map">
-          <Line {...config} />
+          <DualAxes {...config} />
         </div>
         <CloudWords
           requestUrl="/mock/dayCloudmapData.json"
