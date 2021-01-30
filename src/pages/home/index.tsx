@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { storage } from '@/utils';
-import { Menu, Tabs } from 'antd';
+import { Menu, message, Tabs } from 'antd';
 import { LogoBox } from '@/components';
 import { INITIAL_PANES, MENU_LIST } from '@/config';
 import { NavItem, TabItem } from '@/interface';
@@ -117,7 +117,7 @@ function HomeFn(props: Iprops) {
     let activeKey: string = hasTitle === undefined ? key : hasTitle.key;
     hasTitle === undefined && INITIAL_PANES.push({ title: name, content: path, key });
     // // 更新状态
-    setPanes(INITIAL_PANES);
+    setPanes([...INITIAL_PANES]);
     setActiveKey(activeKey);
   };
 
@@ -157,7 +157,10 @@ function HomeFn(props: Iprops) {
     action: 'add' | 'remove'
   ) => {
     if (action === 'remove') {
-      console.log(targetKey);
+      if (panes.length < 2) {
+        message.warn('请至少保留一个tab');
+        return;
+      }
       // 找到删除的索引
       let removeIndex: number = INITIAL_PANES.findIndex((el) => el.key === targetKey);
       // 判断并生成激活的key
@@ -167,7 +170,7 @@ function HomeFn(props: Iprops) {
       if (removeIndex > 0) activeKey = INITIAL_PANES[removeIndex - 1].key;
       // 删除tab并更新
       INITIAL_PANES.splice(removeIndex, 1);
-      setPanes(INITIAL_PANES);
+      setPanes([...INITIAL_PANES]);
       setActiveKey(activeKey);
     }
   };
