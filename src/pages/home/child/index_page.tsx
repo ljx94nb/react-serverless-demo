@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { WaveComponent, HotPlace, QuickEntry } from '../../../components';
 import { storage } from '../../../utils/storage_utils';
 
-const WEEK_CONFIG = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+const WEEK_CONFIG = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 const CHEERS = [
   '今天也是元气满满的一天呢！',
   '积一时之跬步，臻千里之遥程。',
@@ -27,7 +27,7 @@ export default class IndexPage extends Component<Props, State> {
   private countTodayTips = () => {
     let name = storage.get('username');
     let amOrPm: string = new Date().getHours() > 12 ? '下午好' : '上午好';
-    let week: string = WEEK_CONFIG[new Date().getDay() - 1];
+    let week: string = WEEK_CONFIG[new Date().getDay()];
     let time: string = new Date().toLocaleDateString();
     let tips: string = CHEERS[Math.floor(Math.random() * CHEERS.length)];
 

@@ -4,7 +4,6 @@ import { Menu, message, Tabs } from 'antd';
 import { LogoBox } from '@/components';
 import { INITIAL_PANES, MENU_LIST } from '@/config';
 import { NavItem, TabItem } from '@/interface';
-import { HomeService } from '../../service/home_service';
 import { GlobleSetting } from '../../components';
 import GlobalConfigStore from '../../store/global_config';
 import { observer, inject } from 'mobx-react';
@@ -61,19 +60,6 @@ function HomeFn(props: Iprops) {
   let flex: string = !collapsed ? '0 0 240px' : '0 0 75px';
   let leftBack: string = theme === 'dark' ? '#001529' : '#fff';
   const username = props.location.state.username;
-
-  /**
-   * @name 创建导航
-   * @return { Array } 菜单列表
-   * @author liuguisheng
-   * @version 2020-09-14 11:11:17 星期一
-   */
-  const createMenu = () => {
-    // 获取导航树
-    let NavList = HomeService.getFirstNameList();
-    // 返回组件
-    return createNavItem(NavList);
-  };
 
   /**
    * @name 创建导航子集
@@ -201,8 +187,6 @@ function HomeFn(props: Iprops) {
               </Menu.Item>
             );
           })}
-          {/* 树状导航 */}
-          {createMenu()}
         </Menu>
       </div>
       <div className="right">

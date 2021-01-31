@@ -3,7 +3,7 @@
  * @author liuguisheng
  * @version 2020-09-14 10:16:06 星期一
  */
-import { SettingItem, NavItem } from '../interface/home_interface'
+import { SettingItem, NavItem } from '../interface/home_interface';
 
 // 设置组件配置
 export const SETTING_ITEM_CONFIG: SettingItem[] = [
@@ -35,10 +35,10 @@ export const SETTING_ITEM_CONFIG: SettingItem[] = [
     event: 'toggleCollapsed',
     defaultValue: false
   }
-]
+];
 
 // 标签页默认配置
-export const INITIAL_PANES: any[] = [{ title: '主页', content: '主页', key: '0' }]
+export const INITIAL_PANES: any[] = [{ title: '主页', content: '主页', key: '0' }];
 
 // 导航配置
 export const MENU_LIST: NavItem[] = [
@@ -47,31 +47,11 @@ export const MENU_LIST: NavItem[] = [
     key: 'index'
   },
   {
-    name: '字体图标',
-    key: 'iconfont'
-  },
-  {
     name: 'echarts图表',
     key: 'echarts'
   },
   {
     name: '表格',
     key: 'table'
-  },
-  {
-    name: '骨架屏',
-    key: 'skeleton'
-  },
-  {
-    name: '地图',
-    key: 'map'
-  },
-  {
-    name: '富文本编辑器',
-    key: 'markdown'
-  },
-  {
-    name: '内置动画',
-    key: 'animation'
   }
-]
+];

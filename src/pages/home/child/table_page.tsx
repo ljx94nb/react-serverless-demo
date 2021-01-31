@@ -76,7 +76,7 @@ class TablePage extends Component<Props, State> {
     }
   }
 
-  // 选择框选中选项的时候调用此函数
+  // 选择行政区调用此函数
   handleSelect = async (e: any) => {
     const preDistrictName = this.state.districtName;
     this.setState({
