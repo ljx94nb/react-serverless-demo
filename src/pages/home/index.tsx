@@ -39,7 +39,7 @@ function HomeFn(props: Iprops) {
   const [theme, setTheme] = useState('dark');
   const [mode, setMode] = useState('inline');
   const [overflowY, setOverflowY] = useState('scroll');
-  const [activeKey, setActiveKey] = useState('0');
+  const [activeKey, setActiveKey] = useState('index');
   const [panes, setPanes] = useState(INITIAL_PANES);
 
   // console.log(props) // 通过props.location.state接收传过来的state对象
@@ -95,9 +95,7 @@ function HomeFn(props: Iprops) {
    */
   const clickMenuItem = (navItem: NavItem) => {
     // 找到标题
-    let { name, path = '' } = navItem;
-    // 生成随机key
-    let key: string = Math.random().toString();
+    let { name, path = '', key } = navItem;
     // // 判断是否添加过标签，添加过就不在添加并且激活的key为之前的key
     let hasTitle = INITIAL_PANES.find((el) => el.title === name);
     let activeKey: string = hasTitle === undefined ? key : hasTitle.key;
@@ -105,6 +103,7 @@ function HomeFn(props: Iprops) {
     // // 更新状态
     setPanes([...INITIAL_PANES]);
     setActiveKey(activeKey);
+    window.emitter.emit('change_tab', activeKey);
   };
 
   /**
@@ -129,6 +128,7 @@ function HomeFn(props: Iprops) {
    */
   const onChange = (activeKey: string) => {
     setActiveKey(activeKey);
+    window.emitter.emit('change_tab', activeKey);
   };
 
   /**
@@ -150,7 +150,7 @@ function HomeFn(props: Iprops) {
       // 找到删除的索引
       let removeIndex: number = INITIAL_PANES.findIndex((el) => el.key === targetKey);
       // 判断并生成激活的key
-      let activeKey = '0';
+      let activeKey = 'index';
       if (removeIndex === 0 && INITIAL_PANES.length > 1)
         activeKey = INITIAL_PANES[removeIndex + 1].key;
       if (removeIndex > 0) activeKey = INITIAL_PANES[removeIndex - 1].key;
@@ -176,7 +176,7 @@ function HomeFn(props: Iprops) {
           mode={mode as any}
           inlineCollapsed={collapsed}
           className="meun-box"
-          defaultSelectedKeys={['index']}
+          selectedKeys={[activeKey]}
         >
           {/* 主页导航 */}
           {MENU_LIST.map((el: NavItem) => {

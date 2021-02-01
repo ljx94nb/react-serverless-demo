@@ -77,6 +77,10 @@ export default class MapPage extends Component<Props, State> {
   // 生成path
   createPath = (path) => {
     const { map } = this.state;
+    if (!map) {
+      message.error('地图还没加载出来哦，请刷新重试~');
+      return;
+    }
     map.clearMap();
     if (path.length) {
       this.marker = new window.AMap.Marker({

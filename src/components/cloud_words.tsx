@@ -11,6 +11,19 @@ interface IProps {
 
 export const CloudWords = (props: IProps) => {
   const [cloudData, setCloudData] = useState([]);
+  const [rerender, setRerender] = useState(true);
+
+  useEffect(() => {
+    window.emitter.on('change_tab', (activeKey) => {
+      if (activeKey === 'index' || activeKey === 'echarts') {
+        setRerender(false);
+        setTimeout(() => {
+          setRerender(true);
+        }, 0);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     asyncFetch();
   }, [props.dataIndex]);
@@ -41,9 +54,9 @@ export const CloudWords = (props: IProps) => {
     }
   };
 
-  return (
+  return rerender ? (
     <div style={{ width: props.width, height: props.height }}>
       <WordCloud {...cloudConfig} />
     </div>
-  );
+  ) : null;
 };

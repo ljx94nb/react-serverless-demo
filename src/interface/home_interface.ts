@@ -16,6 +16,7 @@ export interface SettingItem {
 // 导航接口
 export interface NavItem {
   [prop: string]: any;
+  key: string;
 }
 
 // 标签页接口

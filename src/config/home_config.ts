@@ -38,7 +38,7 @@ export const SETTING_ITEM_CONFIG: SettingItem[] = [
 ];
 
 // 标签页默认配置
-export const INITIAL_PANES: any[] = [{ title: '主页', content: '主页', key: '0' }];
+export const INITIAL_PANES: any[] = [{ title: '主页', content: '主页', key: 'index' }];
 
 // 导航配置
 export const MENU_LIST: NavItem[] = [

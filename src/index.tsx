@@ -5,12 +5,17 @@ import * as serviceWorker from './serviceWorker';
 import './styles/index.scss';
 import Store from './store/index';
 import { Provider } from 'mobx-react';
+import mitt from 'mitt';
+
+const emitter = mitt();
+window.emitter = emitter;
 
 declare global {
   interface Window {
     tcb: any;
     indexedDB: any;
     AMap: any;
+    emitter: any;
   }
 }
 
