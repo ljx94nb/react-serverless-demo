@@ -127,6 +127,19 @@
     width: 1000px;
     height: 400px;
   }
+
+  .audio-pic {
+    width: 36px;
+    height: 36px;
+    margin-left: 12px;
+    cursor: pointer;
+  }
+
+  .datepicker-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
 }
 
 // 表格页面

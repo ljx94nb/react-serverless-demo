@@ -2,6 +2,7 @@ import { config } from '@/config';
 
 export * from './storage_utils';
 export * from './locationToDistance';
+export * from './zhDigitToArabic';
 export const getApp = () => {
   console.log(window.tcb);
   const app = window.tcb.init({

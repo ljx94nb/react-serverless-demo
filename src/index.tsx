@@ -16,6 +16,7 @@ declare global {
     indexedDB: any;
     AMap: any;
     emitter: any;
+    webkitSpeechRecognition: any;
   }
 }
 

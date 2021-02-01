@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DatePicker } from 'antd';
+import { DatePicker, message } from 'antd';
 import moment from 'moment';
 import { DualAxes } from '@ant-design/charts';
 import { Scene, HeatmapLayer } from '@antv/l7';
@@ -14,6 +14,8 @@ interface IProps {
 const Page = (props: IProps) => {
   const [dataIndex, setDataIndex] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [isSpeech, setIsSpeech] = useState(false); // 浏览器录音开启状态
+  const [dateStr, setDateStr] = useState('2016-08-01');
   const data = props.homeStore.line_data;
   const config = {
     data: [data, data],
@@ -23,7 +25,7 @@ const Page = (props: IProps) => {
       length: {
         alias: '出行距离',
         formatter: function formatter(v) {
-          return Number(v.toFixed(2));
+          return Number(Number(v).toFixed(2));
         }
       },
       userCount: {
@@ -135,9 +137,15 @@ const Page = (props: IProps) => {
 
   const onChange = async (date, dateStr) => {
     setLoading(true);
-    const day = Number(dateStr.split('-')[2]);
+    const numArr = dateStr.split('-');
+    const day = Number(numArr[numArr.length - 1]);
     setDataIndex(day);
-    await props.homeStore.setLineData(dateStr);
+    try {
+      await props.homeStore.setLineData(dateStr);
+      setDateStr(dateStr);
+    } catch (error) {
+      message.error('没找到相应图表');
+    }
     setLoading(false);
   };
 
@@ -148,14 +156,63 @@ const Page = (props: IProps) => {
     );
   };
 
+  // 处理录音
+  const handleSpeech = () => {
+    if (!window.webkitSpeechRecognition) {
+      message.warn('您的浏览器暂不支持语音识别功能');
+      return;
+    }
+    setIsSpeech(true);
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'cmn-Hans-CN'; //普通话 (中国大陆)
+    recognition.start();
+    recognition.onresult = function (e) {
+      try {
+        const transcript = e.results[0][0].transcript;
+        // console.log(transcript);
+        const numArr = getDateStr(transcript);
+        if (numArr.length === 1) {
+          numArr.splice(0, 0, '2016', '08');
+        } else if (numArr.length === 2) {
+          numArr.splice(0, 0, '2016');
+        }
+        onChange(null, numArr.join('-'));
+      } catch (err) {
+        message.error('小罗识别不了哦，再说一次吧~');
+      }
+    };
+    recognition.onerror = function (err) {
+      message.error('语音识别失败');
+      console.error(err);
+    };
+    recognition.onend = function () {
+      setIsSpeech(false);
+    };
+  };
+
+  // 提取年月日
+  const getDateStr = (str: string) => {
+    const numArr = str.match(/\d+/g);
+    return numArr;
+  };
+
   return (
     <div className="echarts-page">
-      <DatePicker
-        onChange={onChange}
-        showToday={false}
-        disabledDate={disabledDate}
-        defaultValue={moment('2016-08-01', 'YYYY-MM-DD')}
-      />
+      <div className="datepicker-container">
+        <DatePicker
+          onChange={onChange}
+          showToday={false}
+          disabledDate={disabledDate}
+          value={moment(dateStr, 'YYYY-MM-DD')}
+        />
+        {isSpeech ? (
+          <img className="audio-pic" src="/luyin.png" alt="audio" />
+        ) : (
+          <img className="audio-pic" src="/yuyin.png" alt="audio" onClick={() => handleSpeech()} />
+        )}
+      </div>
       <div className="line-container">
         <div className="line-map">
           <DualAxes {...config} />
