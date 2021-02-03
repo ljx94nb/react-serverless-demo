@@ -8,6 +8,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import Map from './map_page';
 import { getApp } from '@/utils';
 import { districtName } from '@/config';
+import { requestAdminiDistrict } from '@/api';
 
 const app = getApp();
 
@@ -25,6 +26,8 @@ interface State {
   zoom: number;
   rowId: string;
   districtName: string;
+  districtPath: number[][];
+  center: number[];
 }
 
 const { Option } = Select;
@@ -43,12 +46,18 @@ class TablePage extends Component<Props, State> {
       searchText: '',
       searchedColumn: '',
       path: [],
-      zoom: 12,
+      zoom: 11,
       rowId: '',
-      districtName: districtionArr[0]
+      districtName: districtionArr[0],
+      districtPath: [],
+      center: []
     };
   }
   private searchInput: any;
+
+  componentWillMount() {
+    this.changeDistrictPath('黄浦区');
+  }
 
   componentDidMount() {
     this.handleMounted();
@@ -88,9 +97,27 @@ class TablePage extends Component<Props, State> {
       },
       () => {
         this.handleMounted(preDistrictName);
+        this.changeDistrictPath(e);
       }
     );
   };
+
+  // 地图展示相应的行政区块polygon
+  async changeDistrictPath(districtName) {
+    try {
+      const res = await requestAdminiDistrict(districtName);
+      const center = res.districts[0].center.split(',').map((item) => Number(item));
+      const pathArr = res.districts[0].polyline.split(';');
+      const path = pathArr.map((item) => item.split(','));
+      const districtPath = path.map((item) => [Number(item[0]), Number(item[1])]);
+      this.setState({
+        districtPath,
+        center
+      });
+    } catch (err) {
+      message.error('行政区图层加载失败');
+    }
+  }
 
   // 按照行政区规划请求数据
   handleDistricNameSelect = async (districtName) => {
@@ -187,10 +214,15 @@ class TablePage extends Component<Props, State> {
   // 查看路线
   lookPath = (record) => {
     // console.log(record);
-    this.setState({
-      path: record.track,
-      rowId: record._id
-    });
+    this.setState(
+      {
+        path: record.track,
+        rowId: record._id
+      }
+      // () => {
+      //   window.emitter.emit('create_path', this.state.path);
+      // }
+    );
   };
 
   // 设置选中行高亮的类名
@@ -199,7 +231,7 @@ class TablePage extends Component<Props, State> {
   };
 
   render = () => {
-    const { loading, path, zoom, districtName } = this.state;
+    const { loading, path, zoom, districtName, districtPath, center } = this.state;
     const { homeStore } = this.props;
     const columns: any = [
       {
@@ -281,7 +313,7 @@ class TablePage extends Component<Props, State> {
         </div>
         {loading ? null : (
           <div className="table-page-map">
-            <Map path={path} zoom={zoom} />
+            <Map center={center} path={path} zoom={zoom} districtPath={districtPath} />
           </div>
         )}
       </div>

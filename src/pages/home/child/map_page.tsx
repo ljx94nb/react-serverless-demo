@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { Map } from 'react-amap';
+import { Map, Polygon } from 'react-amap';
 import { message, Radio } from 'antd';
 
 interface Props {
   path: [][];
   zoom: number;
+  districtPath?: number[][];
+  center: number[];
 }
 
 interface State {
   mapPlugins: string[];
   map: any;
-  center: { longitude: number; latitude: number };
 }
 
 const YOUR_AMAP_KEY = '5d8a8dd1fcc6c74b4f7217e311e046c0';
@@ -21,12 +22,13 @@ export default class MapPage extends Component<Props, State> {
 
     this.state = {
       map: null,
-      mapPlugins: ['Scale', 'MapType', 'OverView'],
-      center: { longitude: 121.46, latitude: 31.224 }
+      mapPlugins: ['Scale', 'MapType', 'OverView']
     };
   }
 
   private marker;
+  private polyline;
+  private oldCenter;
   private amapEvents = {
     created: (map) => {
       this.setState({
@@ -81,7 +83,7 @@ export default class MapPage extends Component<Props, State> {
       message.error('地图还没加载出来哦，请刷新重试~');
       return;
     }
-    map.clearMap();
+    map.clearMap(this.polyline);
     if (path.length) {
       this.marker = new window.AMap.Marker({
         map: map,
@@ -97,7 +99,7 @@ export default class MapPage extends Component<Props, State> {
       });
 
       // 绘制轨迹
-      const polyline = new window.AMap.Polyline({
+      this.polyline = new window.AMap.Polyline({
         map: map,
         path,
         showDir: true,
@@ -124,15 +126,26 @@ export default class MapPage extends Component<Props, State> {
     }
   };
 
-  componentDidUpdate() {
-    const { path } = this.props;
-    // console.log(path, map);
-    this.createPath(path);
+  componentWillReceiveProps() {
+    this.oldCenter = this.props.center;
   }
 
+  componentDidUpdate() {
+    if (JSON.stringify(this.oldCenter) !== JSON.stringify(this.props.center)) return;
+    this.createPath(this.props.path);
+  }
+
+  // componentWillMount() {
+  //   window.emitter.on('create_path', (path) => this.createPath(path));
+  // }
+
+  // componentWillUnmount() {
+  //   window.emitter.off('create_path');
+  // }
+
   render() {
-    const { mapPlugins, center } = this.state;
-    const { zoom } = this.props;
+    const { mapPlugins } = this.state;
+    const { zoom, districtPath, center } = this.props;
 
     return (
       <div className="map-page">
@@ -143,7 +156,14 @@ export default class MapPage extends Component<Props, State> {
           zoom={zoom}
           events={this.amapEvents}
           center={center}
-        />
+        >
+          <Polygon
+            path={districtPath}
+            draggable={false}
+            visible={true}
+            style={{ fillOpacity: 0.2, strokeWeight: 1.5 }}
+          />
+        </Map>
         <Radio.Group className="btn-group" onChange={this.handleAnimationChange}>
           <Radio.Button value="start">开始动画</Radio.Button>
           <Radio.Button value="pause">暂停动画</Radio.Button>
