@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Table, message, Input, Select, Button, Space } from 'antd';
+import { Table, message, Input, Select, Button, Space, Tag } from 'antd';
 import { IBikeData } from '@/interface';
 import { observer, inject } from 'mobx-react';
 import { addInDB, readInDB } from '@/indexedDB';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import Map from './map_page';
-import { getApp } from '@/utils';
+import { getApp, getRandomInt } from '@/utils';
 import { districtName } from '@/config';
 import { requestAdminiDistrict } from '@/api';
 
@@ -128,13 +128,31 @@ class TablePage extends Component<Props, State> {
       }
     });
     // console.log(res);
-    res.result.forEach((item) => {
+
+    // 生成状态tag
+    let allCount = res.result.length;
+    let warnCount = getRandomInt(0, allCount);
+    let errorCount = getRandomInt(0, allCount - warnCount);
+    let trueCount = allCount - errorCount - warnCount;
+    trueCount = Math.max(warnCount, errorCount, trueCount);
+    errorCount = Math.min(warnCount, errorCount, trueCount);
+    warnCount = allCount - trueCount - errorCount;
+
+    res.result.forEach((item, index) => {
+      if (index >= 0 && index < errorCount) {
+        item.tags = ['违规'];
+      } else if (index >= errorCount && index < errorCount + warnCount) {
+        item.tags = ['警告'];
+      } else {
+        item.tags = ['合规'];
+      }
       if (item.track.length > 3)
         item.track =
           item.track.length % 2 !== 0
             ? item.track.filter((item, i) => i % 2 === 0).filter((item, i) => i % 2 === 0)
             : item.track.filter((item, i) => i % 2 !== 0).filter((item, i) => i % 2 !== 0);
     });
+
     this.props.homeStore.setBikeData(res.result);
   };
 
@@ -184,7 +202,23 @@ class TablePage extends Component<Props, State> {
       }
     },
     render: (text) =>
-      String(this.state.searchedColumn) === String(dataIndex) ? (
+      dataIndex === 'tags' ? (
+        <>
+          {text.map((tag) => {
+            let color = '#3ba992';
+            if (tag === '违规') {
+              color = '#dc4140';
+            } else if (tag === '警告') {
+              color = '#f6be34';
+            }
+            return (
+              <Tag color={color} key={tag}>
+                {tag}
+              </Tag>
+            );
+          })}
+        </>
+      ) : String(this.state.searchedColumn) === String(dataIndex) ? (
         <Highlighter
           highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[this.state.searchText]}
@@ -244,6 +278,11 @@ class TablePage extends Component<Props, State> {
     const { homeStore } = this.props;
     const columns: any = [
       {
+        title: '状态',
+        dataIndex: 'tags',
+        ...this.getColumnSearchProps('tags')
+      },
+      {
         title: '订单号',
         dataIndex: 'orderid',
         ...this.getColumnSearchProps('orderid'),
@@ -293,6 +332,11 @@ class TablePage extends Component<Props, State> {
       }
     ];
 
+    const allCount = homeStore.bike_data.length;
+    const warnCount = homeStore.bike_data.filter((i) => i.tags[0] === '警告').length;
+    const errorCount = homeStore.bike_data.filter((i) => i.tags[0] === '违规').length;
+    const trueCount = homeStore.bike_data.filter((i) => i.tags[0] === '合规').length;
+
     return (
       <div className="table-page">
         <div className="table-page-header">
@@ -311,13 +355,13 @@ class TablePage extends Component<Props, State> {
             </Select>
           )}
           <span style={{ marginLeft: '24px' }}>总订单量：</span>
-          <span style={{ fontSize: '24px', color: '#434343' }}>{homeStore.bike_data.length}</span>
+          <span style={{ fontSize: '24px', color: '#434343' }}>{allCount}</span>
           <span style={{ marginLeft: '24px' }}>合规订单量：</span>
-          <span style={{ fontSize: '24px', color: '#3ba992' }}>{12}</span>
+          <span style={{ fontSize: '24px', color: '#3ba992' }}>{trueCount}</span>
           <span style={{ marginLeft: '24px' }}>违规订单量：</span>
-          <span style={{ fontSize: '24px', color: '#dc4140' }}>{12}</span>
+          <span style={{ fontSize: '24px', color: '#dc4140' }}>{errorCount}</span>
           <span style={{ marginLeft: '24px' }}>警告订单量：</span>
-          <span style={{ fontSize: '24px', color: '#f6be34' }}>{12}</span>
+          <span style={{ fontSize: '24px', color: '#f6be34' }}>{warnCount}</span>
         </div>
         <div className="table-page_body">
           <Table

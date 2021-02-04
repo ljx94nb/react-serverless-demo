@@ -3,6 +3,12 @@ import { config } from '@/config';
 export * from './storage_utils';
 export * from './locationToDistance';
 
+export function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
+}
+
 export const getApp = () => {
   console.log(window.tcb);
   const app = window.tcb.init({
