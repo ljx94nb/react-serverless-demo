@@ -225,13 +225,22 @@ class TablePage extends Component<Props, State> {
     );
   };
 
+  // 改变selectedRowId
+  changeSelectedRowId = (rowId, path) => {
+    if (this.state.rowId !== rowId)
+      this.setState({
+        rowId,
+        path
+      });
+  };
+
   // 设置选中行高亮的类名
   setRowClassName = (record) => {
     return record._id === this.state.rowId ? 'table-row-selected' : '';
   };
 
   render = () => {
-    const { loading, path, zoom, districtName, districtPath, center } = this.state;
+    const { loading, path, zoom, districtName, districtPath, center, rowId } = this.state;
     const { homeStore } = this.props;
     const columns: any = [
       {
@@ -301,6 +310,14 @@ class TablePage extends Component<Props, State> {
               ))}
             </Select>
           )}
+          <span style={{ marginLeft: '24px' }}>总订单量：</span>
+          <span style={{ fontSize: '24px', color: '#434343' }}>{homeStore.bike_data.length}</span>
+          <span style={{ marginLeft: '24px' }}>合规订单量：</span>
+          <span style={{ fontSize: '24px', color: '#3ba992' }}>{12}</span>
+          <span style={{ marginLeft: '24px' }}>违规订单量：</span>
+          <span style={{ fontSize: '24px', color: '#dc4140' }}>{12}</span>
+          <span style={{ marginLeft: '24px' }}>警告订单量：</span>
+          <span style={{ fontSize: '24px', color: '#f6be34' }}>{12}</span>
         </div>
         <div className="table-page_body">
           <Table
@@ -313,7 +330,14 @@ class TablePage extends Component<Props, State> {
         </div>
         {loading ? null : (
           <div className="table-page-map">
-            <Map center={center} path={path} zoom={zoom} districtPath={districtPath} />
+            <Map
+              rowId={rowId}
+              center={center}
+              path={path}
+              zoom={zoom}
+              districtPath={districtPath}
+              changeSelectedRowId={this.changeSelectedRowId}
+            />
           </div>
         )}
       </div>

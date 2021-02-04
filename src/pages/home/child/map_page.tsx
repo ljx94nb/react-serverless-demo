@@ -7,6 +7,8 @@ interface Props {
   zoom: number;
   districtPath?: number[][];
   center: number[];
+  rowId?: string;
+  changeSelectedRowId?: Function;
 }
 
 interface State {
@@ -26,9 +28,10 @@ export default class MapPage extends Component<Props, State> {
     };
   }
 
-  private marker;
+  private markers = [];
   private polyline;
   private oldCenter;
+  private rowIds: string[] = [];
   private amapEvents = {
     created: (map) => {
       this.setState({
@@ -55,20 +58,22 @@ export default class MapPage extends Component<Props, State> {
 
   handleAnimationChange = (e) => {
     const value = e.target.value;
-    const { path } = this.props;
+    const { path, rowId } = this.props;
+    const marker = this.markers.filter((item) => item.Ce.extData.rowId === rowId)[0];
+
     try {
       switch (value) {
         case 'start':
-          this.startAnimation(this.marker, path);
+          this.startAnimation(marker, path);
           break;
         case 'pause':
-          this.pauseAnimation(this.marker);
+          this.pauseAnimation(marker);
           break;
         case 'resume':
-          this.resumeAnimation(this.marker);
+          this.resumeAnimation(marker);
           break;
         case 'stop':
-          this.stopAnimation(this.marker);
+          this.stopAnimation(marker);
           break;
       }
     } catch (error) {
@@ -77,15 +82,20 @@ export default class MapPage extends Component<Props, State> {
   };
 
   // 生成path
-  createPath = (path) => {
+  createPath = (path, rowId) => {
     const { map } = this.state;
     if (!map) {
       message.error('地图还没加载出来哦，请刷新重试~');
       return;
     }
-    map.clearMap(this.polyline);
+    if (this.rowIds.includes(rowId)) {
+      map.panTo(path[0]);
+      map.setZoom(17);
+      return;
+    }
+    // map.clearMap(this.polyline);
     if (path.length) {
-      this.marker = new window.AMap.Marker({
+      const marker = new window.AMap.Marker({
         map: map,
         position: path[0],
         icon: new window.AMap.Icon({
@@ -95,8 +105,12 @@ export default class MapPage extends Component<Props, State> {
         }),
         offset: new window.AMap.Pixel(-26, -32),
         autoRotation: true,
-        angle: 0
+        angle: 0,
+        clickable: true,
+        extData: { rowId, path }
       });
+
+      this.markers.push(marker);
 
       // 绘制轨迹
       this.polyline = new window.AMap.Polyline({
@@ -118,11 +132,20 @@ export default class MapPage extends Component<Props, State> {
         // strokeStyle: "solid"  //线样式
       });
 
-      this.marker.on('moving', function (e) {
+      marker.on('moving', function (e) {
         passedPolyline.setPath(e.passedPath);
       });
 
+      marker.on('click', (e) => {
+        const extData = e.target.Ce.extData;
+        const rowId = extData.rowId;
+        const path = extData.path;
+        this.props.changeSelectedRowId(rowId, path);
+      });
+
       map.setFitView();
+
+      this.rowIds.push(rowId);
     }
   };
 
@@ -132,7 +155,7 @@ export default class MapPage extends Component<Props, State> {
 
   componentDidUpdate() {
     if (JSON.stringify(this.oldCenter) !== JSON.stringify(this.props.center)) return;
-    this.createPath(this.props.path);
+    this.createPath(this.props.path, this.props.rowId);
   }
 
   // componentWillMount() {
@@ -161,7 +184,7 @@ export default class MapPage extends Component<Props, State> {
             path={districtPath}
             draggable={false}
             visible={true}
-            style={{ fillOpacity: 0.2, strokeWeight: 1.5 }}
+            style={{ fillColor: '#b4adff', fillOpacity: 0.5, strokeWeight: 1.5 }}
           />
         </Map>
         <Radio.Group className="btn-group" onChange={this.handleAnimationChange}>
