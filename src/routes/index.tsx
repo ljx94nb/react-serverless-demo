@@ -1,17 +1,17 @@
-import React from 'react'
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
-import { Login, Home } from '@/pages'
+import React from 'react';
+import { HashRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { Login, Home } from '@/pages';
 
 function Router() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Switch>
         <Route path="/login" component={Login} exact />
         <Route path="/home" component={Home} exact />
         <Redirect to="/login" />
       </Switch>
-    </BrowserRouter>
-  )
+    </HashRouter>
+  );
 }
 
-export default Router
+export default Router;

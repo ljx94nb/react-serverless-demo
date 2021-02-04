@@ -6,19 +6,55 @@
   "functions": [
     {
       "name": "find_bike",
-      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+      "config": {
+        "timeout": 5,
+        "envVariables": {},
+        "runtime": "Nodejs10.15",
+        "memorySize": 128
+      },
+      "timeout": 5,
+      "envVariables": {},
+      "runtime": "Nodejs10.15",
+      "memorySize": 128
     },
     {
       "name": "find_user",
-      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+      "config": {
+        "timeout": 5,
+        "envVariables": {},
+        "runtime": "Nodejs10.15",
+        "memorySize": 128
+      },
+      "timeout": 5,
+      "envVariables": {},
+      "runtime": "Nodejs10.15",
+      "memorySize": 128
     },
     {
       "name": "login",
-      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+      "config": {
+        "timeout": 5,
+        "envVariables": {},
+        "runtime": "Nodejs10.15",
+        "memorySize": 128
+      },
+      "timeout": 5,
+      "envVariables": {},
+      "runtime": "Nodejs10.15",
+      "memorySize": 128
     },
     {
       "name": "register",
-      "config": { "timeout": 5, "envVariables": {}, "runtime": "Nodejs10.15", "memorySize": 128 }
+      "config": {
+        "timeout": 5,
+        "envVariables": {},
+        "runtime": "Nodejs10.15",
+        "memorySize": 128
+      },
+      "timeout": 5,
+      "envVariables": {},
+      "runtime": "Nodejs10.15",
+      "memorySize": 128
     }
   ],
   "framework": {
@@ -39,9 +75,14 @@
       "db": {
         "use": "@cloudbase/framework-plugin-database",
         "inputs": {
-          "collections": [{ "collectionName": "demo_web" }]
+          "collections": [
+            {
+              "collectionName": "demo_web"
+            }
+          ]
         }
       }
-    }
+    },
+    "name": "react-serverless"
   }
 }
