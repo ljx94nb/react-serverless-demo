@@ -59,7 +59,7 @@ function HomeFn(props: Iprops) {
   let size: string = !collapsed ? 'large' : 'small';
   let flex: string = !collapsed ? '0 0 240px' : '0 0 75px';
   let leftBack: string = theme === 'dark' ? '#001529' : '#fff';
-  const username = props.location.state.username;
+  const username = storage.get('username');
 
   /**
    * @name 创建导航子集
