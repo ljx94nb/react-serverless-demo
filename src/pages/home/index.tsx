@@ -11,8 +11,6 @@ import { componentFactory } from './component_factory';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const LOGO = require('@/assets/images/logo.png');
-// 引入子导航
-const { SubMenu } = Menu;
 // 引入字标签
 const { TabPane } = Tabs;
 
@@ -38,7 +36,6 @@ function HomeFn(props: Iprops) {
   const [background, setBackground] = useState('#fff');
   const [theme, setTheme] = useState('dark');
   const [mode, setMode] = useState('inline');
-  const [overflowY, setOverflowY] = useState('scroll');
   const [activeKey, setActiveKey] = useState('index');
   const [panes, setPanes] = useState(INITIAL_PANES);
 
@@ -60,32 +57,6 @@ function HomeFn(props: Iprops) {
   let flex: string = !collapsed ? '0 0 240px' : '0 0 75px';
   let leftBack: string = theme === 'dark' ? '#001529' : '#fff';
   const username = storage.get('username');
-
-  /**
-   * @name 创建导航子集
-   * @params { Array } NavList 导航配置
-   * @return { Array } 导航列表
-   * @author liuguisheng
-   * @version 2020-09-14 14:45:55 星期一
-   */
-  const createNavItem = (NavList: NavItem) => {
-    // 递归创建导航
-    return NavList.map((el: NavItem) => {
-      if (el.children && el.children.length && Object.keys(el.children[0]).length) {
-        return (
-          <SubMenu key={el.code} title={el.name}>
-            {createNavItem(el.children)}
-          </SubMenu>
-        );
-      } else {
-        return (
-          <Menu.Item key={el.code} onClick={() => clickMenuItem(el)}>
-            {el.name}
-          </Menu.Item>
-        );
-      }
-    });
-  };
 
   /**
    * @name 点击菜单触发
@@ -113,12 +84,11 @@ function HomeFn(props: Iprops) {
    * @version 2020-09-15 16:09:36 星期二
    */
   const handGlobalSetting = (e: State) => {
-    let { collapsed, background, theme, mode, overflowY } = e;
+    let { collapsed, background, theme, mode } = e;
     setCollapsed(collapsed);
     setBackground(background);
     setTheme(theme);
     setMode(mode);
-    setOverflowY(overflowY);
   };
 
   /**
