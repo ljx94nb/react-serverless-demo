@@ -302,11 +302,13 @@ class TablePage extends Component<Props, State> {
       {
         title: '状态',
         dataIndex: 'tags',
+        key: 'tags',
         ...this.getColumnSearchProps('tags')
       },
       {
         title: '订单号',
         dataIndex: 'orderid',
+        key: 'orderid',
         ...this.getColumnSearchProps('orderid'),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.orderid) - Number(b.orderid)
@@ -314,6 +316,7 @@ class TablePage extends Component<Props, State> {
       {
         title: '单车号',
         dataIndex: 'bikeid',
+        key: 'bikeid',
         ...this.getColumnSearchProps('bikeid'),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.bikeid) - Number(b.bikeid)
@@ -321,6 +324,7 @@ class TablePage extends Component<Props, State> {
       {
         title: '用户id',
         dataIndex: 'userid',
+        key: 'userid',
         ...this.getColumnSearchProps('userid'),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.userid) - Number(b.userid)
@@ -328,6 +332,7 @@ class TablePage extends Component<Props, State> {
       {
         title: '出发时间',
         dataIndex: 'start_time',
+        key: 'start_time',
         ...this.getColumnSearchProps('start_time'),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => a.start_time_num - b.start_time_num
@@ -340,6 +345,7 @@ class TablePage extends Component<Props, State> {
       {
         title: '到达时间',
         dataIndex: 'end_time',
+        key: 'end_time',
         ...this.getColumnSearchProps('end_time'),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => a.end_time_num - b.end_time_num
