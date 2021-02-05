@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { WaveComponent, HotPlace, QuickEntry } from '../../../components';
+import { WaveComponent, HotPlace, QuickEntry, OrderStatus } from '../../../components';
 import { storage } from '../../../utils/storage_utils';
 
 const WEEK_CONFIG = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
@@ -49,22 +49,22 @@ export default class IndexPage extends Component<Props, State> {
       <div className="index-page">
         <div className="top_message">
           {this.countTodayTips()}
-          <WaveComponent background="#859CB5">
-            <div className="content" title="通知">
+          <WaveComponent background="#3ba992">
+            <div className="content" title="合规">
               <i className="iconfont icon-xiaoxizhongxin"></i>
-              <span className="number">14278</span>
+              <span className="number">合规：836</span>
             </div>
           </WaveComponent>
-          <WaveComponent background="#E4D8C4">
-            <div className="content" title="消息">
+          <WaveComponent background="#dc4140">
+            <div className="content" title="违规">
               <i className="iconfont icon-pinglun1"></i>
-              <span className="number">87432</span>
+              <span className="number">违规：88</span>
             </div>
           </WaveComponent>
-          <WaveComponent background="#AAD0D3">
-            <div className="content" title="交易额">
+          <WaveComponent background="#f6be34">
+            <div className="content" title="警告">
               <i className="iconfont icon-yulebao"></i>
-              <span className="number">23865</span>
+              <span className="number">警告：100</span>
             </div>
           </WaveComponent>
         </div>
@@ -72,6 +72,9 @@ export default class IndexPage extends Component<Props, State> {
           <QuickEntry></QuickEntry>
         </div>
         <div className="main-body">
+          <div className="order-status">
+            <OrderStatus />
+          </div>
           <div className="sall-action-body">
             <HotPlace />
           </div>

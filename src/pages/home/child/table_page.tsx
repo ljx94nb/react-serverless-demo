@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, message, Input, Select, Button, Space, Tag } from 'antd';
+import { Table, message, Input, Select, Button, Space, Tag, Popover } from 'antd';
 import { IBikeData } from '@/interface';
 import { observer, inject } from 'mobx-react';
 import { addInDB, readInDB } from '@/indexedDB';
@@ -206,15 +206,37 @@ class TablePage extends Component<Props, State> {
         <>
           {text.map((tag) => {
             let color = '#3ba992';
+            let title = '';
+            let content = null;
             if (tag === '违规') {
               color = '#dc4140';
+              title = '违规详情';
+              content = (
+                <div>
+                  <p>违规条例1</p>
+                  <p>违规条例2</p>
+                </div>
+              );
             } else if (tag === '警告') {
               color = '#f6be34';
+              title = '警告详情';
+              content = (
+                <div>
+                  <p>警告条例1</p>
+                  <p>警告条例2</p>
+                </div>
+              );
             }
-            return (
+            return title === '' ? (
               <Tag color={color} key={tag}>
                 {tag}
               </Tag>
+            ) : (
+              <Popover content={content} title={title}>
+                <Tag color={color} key={tag}>
+                  {tag}
+                </Tag>
+              </Popover>
             );
           })}
         </>
@@ -286,24 +308,28 @@ class TablePage extends Component<Props, State> {
         title: '订单号',
         dataIndex: 'orderid',
         ...this.getColumnSearchProps('orderid'),
+        sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.orderid) - Number(b.orderid)
       },
       {
         title: '单车号',
         dataIndex: 'bikeid',
         ...this.getColumnSearchProps('bikeid'),
+        sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.bikeid) - Number(b.bikeid)
       },
       {
         title: '用户id',
         dataIndex: 'userid',
         ...this.getColumnSearchProps('userid'),
+        sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => Number(a.userid) - Number(b.userid)
       },
       {
         title: '出发时间',
         dataIndex: 'start_time',
         ...this.getColumnSearchProps('start_time'),
+        sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => a.start_time_num - b.start_time_num
       },
       {
@@ -315,6 +341,7 @@ class TablePage extends Component<Props, State> {
         title: '到达时间',
         dataIndex: 'end_time',
         ...this.getColumnSearchProps('end_time'),
+        sortDirections: ['descend', 'ascend'],
         sorter: (a: IBikeData, b: IBikeData) => a.end_time_num - b.end_time_num
       },
       {

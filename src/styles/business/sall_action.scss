@@ -5,4 +5,20 @@
     height: 70px;
     @include h1-font;
   }
+
+  .list-container {
+    width: 800px;
+    height: 360px;
+    overflow-y: scroll;
+  }
+
+  .list-container::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  .list-container {
+    -ms-overflow-style: none;
+  }
+  .list-container {
+    overflow: -moz-scrollbars-none;
+  }
 }

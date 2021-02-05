@@ -26,7 +26,6 @@
 // 主页样式
 .index-page {
   width: 1630px;
-  padding-bottom: 50px;
 
   .top_message {
     display: flex;
@@ -69,6 +68,7 @@
         padding: 20px 0;
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
 
         .iconfont {
@@ -79,7 +79,7 @@
 
         .number {
           font-size: 40px;
-          margin-left: 30px;
+          margin-left: 42px;
           color: #4c4c4c;
         }
       }
@@ -91,6 +91,11 @@
     justify-content: space-between;
 
     .sall-action-body {
+      min-width: 300px;
+      margin-left: 30px;
+    }
+
+    .order-status {
       min-width: 300px;
       margin-left: 30px;
     }
