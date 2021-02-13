@@ -32,7 +32,7 @@
   "scripts": {
     "dev": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "deploy": "cloudbase framework deploy",
+    "deploy": "tcb framework deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

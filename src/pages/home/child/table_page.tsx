@@ -138,7 +138,17 @@ class TablePage extends Component<Props, State> {
     errorCount = Math.min(warnCount, errorCount, trueCount);
     warnCount = allCount - trueCount - errorCount;
 
-    res.result.forEach((item, index) => {
+    const result = [];
+    for (let i = 0; i < res.result.length - 1; i++) {
+      if (res.result[i].orderid !== res.result[i + 1].orderid) {
+        result.push(res.result[i]);
+        if (i === res.result.length - 2) {
+          result.push(res.result[i + 1]);
+        }
+      }
+    }
+
+    result.forEach((item, index) => {
       if (index >= 0 && index < errorCount) {
         item.tags = ['违规'];
       } else if (index >= errorCount && index < errorCount + warnCount) {
@@ -153,7 +163,7 @@ class TablePage extends Component<Props, State> {
             : item.track.filter((item, i) => i % 2 !== 0).filter((item, i) => i % 2 !== 0);
     });
 
-    this.props.homeStore.setBikeData(res.result);
+    this.props.homeStore.setBikeData(result);
   };
 
   // 筛选功能
