@@ -15,6 +15,8 @@ declare global {
     tcb: any;
     indexedDB: any;
     AMap: any;
+    Loca: any;
+    openInfoWin: any;
     emitter: any;
     webkitSpeechRecognition: any;
     turf: any;

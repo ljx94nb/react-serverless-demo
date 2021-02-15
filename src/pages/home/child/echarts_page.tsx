@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { DatePicker, message } from 'antd';
 import moment from 'moment';
 import { DualAxes } from '@ant-design/charts';
-import { Scene, HeatmapLayer } from '@antv/l7';
-import { Mapbox } from '@antv/l7-maps';
 import { inject, observer } from 'mobx-react';
 import { Loading, CloudWords } from '@/components';
+import { useLoadHotPlaceMap } from '@/hooks';
 
 interface IProps {
   homeStore: any;
@@ -90,44 +89,8 @@ const Page = (props: IProps) => {
     }
   };
 
-  useEffect(() => {
-    const scene = new Scene({
-      id: 'map',
-      map: new Mapbox({
-        style: 'dark',
-        pitch: 0,
-        center: [121.46, 31.224],
-        zoom: 12
-      })
-    });
-    scene.on('loaded', () => {
-      fetch('/mock/heatmap.json')
-        .then((res) => res.json())
-        .then((data) => {
-          const layer = new HeatmapLayer({})
-            .source(data)
-            .shape('heatmap')
-            .size('mag', [0, 1.0]) // weight映射通道
-            .style({
-              intensity: 2,
-              radius: 20,
-              opacity: 1.0,
-              rampColors: {
-                colors: [
-                  '#FF4818',
-                  '#F7B74A',
-                  '#FFF598',
-                  '#F27DEB',
-                  '#8C1EB2',
-                  '#421EB2'
-                ].reverse(),
-                positions: [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-              }
-            });
-          scene.addLayer(layer);
-        });
-    });
-  }, []);
+  // 生成加载热点地区地图的方法
+  const { loadHotPlaceMap } = useLoadHotPlaceMap();
 
   useEffect(() => {
     props.homeStore.setLineData('2016-08-01').then(() => {
@@ -135,12 +98,14 @@ const Page = (props: IProps) => {
     });
   }, []);
 
+  // 切换日期
   const onChange = async (date, dateStr) => {
     setLoading(true);
     const numArr = dateStr.split('-');
     const day = Number(numArr[numArr.length - 1]);
     setDataIndex(day);
     try {
+      loadHotPlaceMap(day);
       await props.homeStore.setLineData(dateStr);
       setDateStr(dateStr);
     } catch (error) {
