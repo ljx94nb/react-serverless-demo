@@ -2,6 +2,7 @@ import { config } from '@/config';
 
 export * from './storage_utils';
 export * from './locationToDistance';
+export * from './findOperationAera';
 
 export function getRandomInt(min, max) {
   min = Math.ceil(min);

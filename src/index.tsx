@@ -17,6 +17,7 @@ declare global {
     AMap: any;
     emitter: any;
     webkitSpeechRecognition: any;
+    turf: any;
   }
 }
 

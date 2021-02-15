@@ -6,9 +6,12 @@ interface Props {
   path: [][];
   zoom: number;
   districtPath?: number[][];
+  operationPath: number[][];
   center: number[];
   rowId?: string;
   changeSelectedRowId?: Function;
+  isOperationOpen?: boolean;
+  isDistrictionOpen?: boolean;
 }
 
 interface State {
@@ -168,7 +171,14 @@ export default class MapPage extends Component<Props, State> {
 
   render() {
     const { mapPlugins } = this.state;
-    const { zoom, districtPath, center } = this.props;
+    const {
+      zoom,
+      districtPath,
+      operationPath,
+      center,
+      isOperationOpen,
+      isDistrictionOpen
+    } = this.props;
 
     return (
       <div className="map-page">
@@ -180,12 +190,32 @@ export default class MapPage extends Component<Props, State> {
           events={this.amapEvents}
           center={center}
         >
-          <Polygon
-            path={districtPath}
-            draggable={false}
-            visible={true}
-            style={{ fillColor: '#b4adff', fillOpacity: 0.5, strokeWeight: 1.5 }}
-          />
+          {isDistrictionOpen ? (
+            <Polygon
+              path={districtPath}
+              draggable={false}
+              visible={true}
+              style={{
+                fillColor: '#b4adff',
+                fillOpacity: 0.6,
+                strokeWeight: 1,
+                strokeColor: '#b4adff'
+              }}
+            />
+          ) : null}
+          {isOperationOpen ? (
+            <Polygon
+              path={operationPath}
+              draggable={false}
+              visible={true}
+              style={{
+                fillColor: '#3ba992',
+                fillOpacity: 0.3,
+                strokeWeight: 1,
+                strokeColor: '#3ba992'
+              }}
+            />
+          ) : null}
         </Map>
         <Radio.Group className="btn-group" onChange={this.handleAnimationChange}>
           <Radio.Button value="start">开始动画</Radio.Button>

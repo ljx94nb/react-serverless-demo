@@ -6,9 +6,10 @@ import { addInDB, readInDB } from '@/indexedDB';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import Map from './map_page';
-import { getApp, getRandomInt } from '@/utils';
+import { findOperationAera, getApp, getRandomInt, storage } from '@/utils';
 import { districtName } from '@/config';
 import { requestAdminiDistrict } from '@/api';
+import { Switch } from 'antd';
 
 const app = getApp();
 
@@ -27,7 +28,10 @@ interface State {
   rowId: string;
   districtName: string;
   districtPath: number[][];
+  operationPath: number[][];
   center: number[];
+  isDistrictionOpen: boolean;
+  isOperationOpen: boolean;
 }
 
 const { Option } = Select;
@@ -46,18 +50,17 @@ class TablePage extends Component<Props, State> {
       searchText: '',
       searchedColumn: '',
       path: [],
-      zoom: 11,
+      zoom: 12,
       rowId: '',
       districtName: districtionArr[0],
+      operationPath: [],
       districtPath: [],
-      center: []
+      center: [],
+      isOperationOpen: true,
+      isDistrictionOpen: true
     };
   }
   private searchInput: any;
-
-  componentWillMount() {
-    this.changeDistrictPath('黄浦区');
-  }
 
   componentDidMount() {
     this.handleMounted();
@@ -65,15 +68,24 @@ class TablePage extends Component<Props, State> {
 
   async handleMounted(preDistrictName = districtionArr[0]) {
     const { districtName } = this.state;
+    await this.changeDistrictPath(districtName);
     try {
       try {
         const buffer = await readInDB(districtName);
+        const operationPath = storage.get(districtName);
         this.props.homeStore.setBikeData(buffer);
+        this.setState({
+          operationPath: JSON.parse(operationPath)
+        });
       } catch (err) {
         await this.handleDistricNameSelect(districtName);
-        addInDB({ districtName, data: this.props.homeStore.bike_data });
+        addInDB({
+          districtName,
+          data: this.props.homeStore.bike_data
+        });
       }
     } catch (error) {
+      console.error(error);
       message.error('数据加载失败');
       this.setState({
         districtName: preDistrictName
@@ -88,16 +100,13 @@ class TablePage extends Component<Props, State> {
   // 选择行政区调用此函数
   handleSelect = async (e: any) => {
     const preDistrictName = this.state.districtName;
-    this.setState({
-      loading: true
-    });
     this.setState(
       {
+        loading: true,
         districtName: e
       },
       () => {
         this.handleMounted(preDistrictName);
-        this.changeDistrictPath(e);
       }
     );
   };
@@ -139,6 +148,7 @@ class TablePage extends Component<Props, State> {
     warnCount = allCount - trueCount - errorCount;
 
     const result = [];
+    let operationPath = [];
     for (let i = 0; i < res.result.length - 1; i++) {
       if (res.result[i].orderid !== res.result[i + 1].orderid) {
         result.push(res.result[i]);
@@ -149,6 +159,8 @@ class TablePage extends Component<Props, State> {
     }
 
     result.forEach((item, index) => {
+      // const midIndex = Math.floor(item.track.length / 2);
+      operationPath.push(...item.track);
       if (index >= 0 && index < errorCount) {
         item.tags = ['违规'];
       } else if (index >= errorCount && index < errorCount + warnCount) {
@@ -156,14 +168,20 @@ class TablePage extends Component<Props, State> {
       } else {
         item.tags = ['合规'];
       }
-      if (item.track.length > 3)
+      if (item.track.length > 5)
         item.track =
           item.track.length % 2 !== 0
             ? item.track.filter((item, i) => i % 2 === 0).filter((item, i) => i % 2 === 0)
             : item.track.filter((item, i) => i % 2 !== 0).filter((item, i) => i % 2 !== 0);
     });
 
+    const intersection = findOperationAera(operationPath, this.state.districtPath);
+    operationPath = intersection.geometry.coordinates[0];
+    storage.set(districtName, JSON.stringify(operationPath));
     this.props.homeStore.setBikeData(result);
+    this.setState({
+      operationPath
+    });
   };
 
   // 筛选功能
@@ -305,8 +323,31 @@ class TablePage extends Component<Props, State> {
     return record._id === this.state.rowId ? 'table-row-selected' : '';
   };
 
+  changeOperation = (e) => {
+    this.setState({
+      isOperationOpen: e
+    });
+  };
+
+  changeDistriction = (e) => {
+    this.setState({
+      isDistrictionOpen: e
+    });
+  };
+
   render = () => {
-    const { loading, path, zoom, districtName, districtPath, center, rowId } = this.state;
+    const {
+      loading,
+      path,
+      zoom,
+      districtName,
+      districtPath,
+      operationPath,
+      center,
+      rowId,
+      isOperationOpen,
+      isDistrictionOpen
+    } = this.state;
     const { homeStore } = this.props;
     const columns: any = [
       {
@@ -417,13 +458,33 @@ class TablePage extends Component<Props, State> {
         </div>
         {loading ? null : (
           <div className="table-page-map">
+            <div className="map-btn-box">
+              <Tag color="#3ba992">运营区</Tag>
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                defaultChecked={isOperationOpen}
+                onChange={this.changeOperation}
+              />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Tag color="#b4adff">行政区</Tag>
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                defaultChecked={isDistrictionOpen}
+                onChange={this.changeDistriction}
+              />
+            </div>
             <Map
               rowId={rowId}
               center={center}
               path={path}
               zoom={zoom}
               districtPath={districtPath}
+              operationPath={operationPath}
               changeSelectedRowId={this.changeSelectedRowId}
+              isOperationOpen={isOperationOpen}
+              isDistrictionOpen={isDistrictionOpen}
             />
           </div>
         )}
