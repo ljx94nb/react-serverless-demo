@@ -20,20 +20,6 @@ export const SETTING_ITEM_CONFIG: SettingItem[] = [
     unCheckedChildren: '关闭',
     event: 'onlyChangeTheme',
     defaultValue: true
-  },
-  {
-    title: '导航排列方式:',
-    checkedChildren: '垂直',
-    unCheckedChildren: '内嵌',
-    event: 'changeMode',
-    defaultValue: false
-  },
-  {
-    title: '导航是否展开:',
-    checkedChildren: '是',
-    unCheckedChildren: '否',
-    event: 'toggleCollapsed',
-    defaultValue: false
   }
 ];
 
