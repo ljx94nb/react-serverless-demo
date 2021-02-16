@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const useLoadHotPlaceMap = () => {
+export const useLoadHotPlaceMap = (mapId) => {
   useEffect(() => {
     loadHotPlaceMap();
   }, []);
@@ -10,11 +10,11 @@ export const useLoadHotPlaceMap = () => {
       .then((res) => res.json())
       .then((data) => {
         // console.log(data[day]);
-        var map = new window.AMap.Map('map', {
+        var map = new window.AMap.Map(mapId, {
           features: ['bg', 'road', 'building', 'point'],
           mapStyle: 'amap://styles/grey',
           pitch: 50,
-          zoom: 11,
+          zoom: 11.3,
           center: [121.4737, 31.23],
           viewMode: '3D'
         });

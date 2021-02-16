@@ -409,7 +409,7 @@ class TablePage extends Component<Props, State> {
       {
         title: 'Action',
         render: (text, record) => (
-          <a href="javascript:void(0);" onClick={() => this.lookPath(record)}>
+          <a href="javascript:void(0)" onClick={() => this.lookPath(record)}>
             查看路线 · {record.distance}
           </a>
         )

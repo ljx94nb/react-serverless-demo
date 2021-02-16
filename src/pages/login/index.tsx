@@ -146,11 +146,11 @@ export const Login = (props: Iprops) => {
         </Form.Item>
       </Form>
       {btnText === '登录' ? (
-        <a href="javascript:void(0);" className="register-btn" onClick={registerUser}>
+        <a href="javascript:void(0)" className="register-btn" onClick={registerUser}>
           *点我注册哦~
         </a>
       ) : (
-        <a href="javascript:void(0);" className="back-btn" onClick={backToLogin}>
+        <a href="javascript:void(0)" className="back-btn" onClick={backToLogin}>
           {'<'} 返回
         </a>
       )}

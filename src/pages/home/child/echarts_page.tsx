@@ -90,7 +90,7 @@ const Page = (props: IProps) => {
   };
 
   // 生成加载热点地区地图的方法
-  const { loadHotPlaceMap } = useLoadHotPlaceMap();
+  const { loadHotPlaceMap } = useLoadHotPlaceMap('map');
 
   useEffect(() => {
     props.homeStore.setLineData('2016-08-01').then(() => {
@@ -191,7 +191,7 @@ const Page = (props: IProps) => {
         />
         {loading ? <Loading /> : null}
       </div>
-      <div style={{ width: '1200px', height: '400px', position: 'relative' }} id="map" />
+      <div style={{ width: '100%', height: '400px', position: 'relative' }} id="map" />
     </div>
   );
 };
