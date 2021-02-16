@@ -78,6 +78,7 @@ class TablePage extends Component<Props, State> {
         this.setState({
           operationPath: JSON.parse(operationPath)
         });
+        if (!this.state.operationPath.length) message.error('运营区加载失败');
       } catch (err) {
         await this.handleDistricNameSelect(districtName);
         addInDB({
