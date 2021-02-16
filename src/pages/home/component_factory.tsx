@@ -12,12 +12,14 @@ import framePage from './child/frame_page';
 import indexPage from './child/index_page';
 import echartsPage from './child/echarts_page';
 import tablePage from './child/table_page';
+import helpPage from './child/help_page';
 
 // 页面注册(目前是按照标题对应页面，后期按照页面的唯一标识对应)
 const components: { [prop: string]: any } = {
   主页: indexPage,
   echarts图表: echartsPage,
-  表格: tablePage
+  表格: tablePage,
+  帮助: helpPage
 };
 
 // 组件渲染工厂

@@ -22,9 +22,9 @@ module.exports = override(
   addPostcssPlugins([
     require('postcss-pxtorem')({
       rootValue: 16,
-      propList: ['*']
-      // minPixelValue: 2,
-      // selectorBlackList: ['am-']
+      propList: ['*'],
+      minPixelValue: 2,
+      selectorBlackList: ['am-']
     })
   ]),
   addWebpackAlias({

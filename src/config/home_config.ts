@@ -39,5 +39,9 @@ export const MENU_LIST: NavItem[] = [
   {
     name: '表格',
     key: 'table'
+  },
+  {
+    name: '帮助',
+    key: 'help'
   }
 ];
