@@ -10,8 +10,7 @@ export async function requestAdminiDistrict(districtName) {
         params: {
           subdistrict: 0,
           extensions: 'all',
-          key: '5d8a8dd1fcc6c74b4f7217e311e046c0',
-          s: 'rsv3',
+          key: '8b5e15c15d37f2e4e987b786115a837a',
           output: 'json',
           keywords: districtName
         }
