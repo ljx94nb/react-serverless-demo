@@ -6,6 +6,7 @@ import './styles/index.scss';
 import Store from './store/index';
 import { Provider } from 'mobx-react';
 import mitt from 'mitt';
+import './rem';
 
 const emitter = mitt();
 window.emitter = emitter;

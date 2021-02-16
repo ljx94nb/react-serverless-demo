@@ -64,6 +64,7 @@
     "eslint-plugin-react": "^7.16.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
+    "postcss-pxtorem": "^5.1.1",
     "react-app-rewired": "^2.1.6"
   }
 }
