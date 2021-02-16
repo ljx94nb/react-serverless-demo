@@ -10,6 +10,7 @@ import { findOperationAera, getApp, getRandomInt, storage } from '@/utils';
 import { districtName } from '@/config';
 import { requestAdminiDistrict } from '@/api';
 import { Switch } from 'antd';
+import axios from 'axios';
 
 const app = getApp();
 
@@ -175,8 +176,15 @@ class TablePage extends Component<Props, State> {
             : item.track.filter((item, i) => i % 2 !== 0).filter((item, i) => i % 2 !== 0);
     });
 
-    const intersection = findOperationAera(operationPath, this.state.districtPath);
-    operationPath = intersection.geometry.coordinates[0];
+    // 生成运营区的代码
+    // const intersection = findOperationAera(operationPath, this.state.districtPath);
+    // operationPath = intersection.geometry.coordinates[0];
+    try {
+      operationPath = (await axios.get(`./mock/${districtName}.json`)).data;
+    } catch (err) {
+      operationPath = [];
+      message.error('运营区加载失败');
+    }
     storage.set(districtName, JSON.stringify(operationPath));
     this.props.homeStore.setBikeData(result);
     this.setState({
