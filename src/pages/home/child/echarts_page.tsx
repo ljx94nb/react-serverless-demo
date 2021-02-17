@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DatePicker, message } from 'antd';
+import { DatePicker, message, Tooltip } from 'antd';
 import moment from 'moment';
 import { DualAxes } from '@ant-design/charts';
 import { inject, observer } from 'mobx-react';
@@ -138,6 +138,7 @@ const Page = (props: IProps) => {
         const transcript = e.results[0][0].transcript;
         // console.log(transcript);
         const numArr = getDateStr(transcript);
+        // console.log(numArr);
         if (numArr.length === 1) {
           numArr.splice(0, 0, '2016', '08');
         } else if (numArr.length === 2) {
@@ -172,11 +173,14 @@ const Page = (props: IProps) => {
           disabledDate={disabledDate}
           value={moment(dateStr, 'YYYY-MM-DD')}
         />
-        {isSpeech ? (
+        <Tooltip title="目前暂时只有上海市2016年8月份的单车数据">
+          <span className="select-tip">* 请选择相应的日期</span>
+        </Tooltip>
+        {/* {isSpeech ? (
           <img className="audio-pic" src="/luyin.png" alt="audio" />
         ) : (
           <img className="audio-pic" src="/yuyin.png" alt="audio" onClick={() => handleSpeech()} />
-        )}
+        )} */}
       </div>
       <div className="line-container">
         <div className="line-map">
