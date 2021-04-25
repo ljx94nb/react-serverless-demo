@@ -33,6 +33,9 @@ interface State {
   center: number[];
   isDistrictionOpen: boolean;
   isOperationOpen: boolean;
+  isErrorOpen: boolean;
+  isWarnOpen: boolean;
+  isCorrectOpen: boolean;
 }
 
 const { Option } = Select;
@@ -58,10 +61,17 @@ class TablePage extends Component<Props, State> {
       districtPath: [],
       center: [],
       isOperationOpen: true,
-      isDistrictionOpen: true
+      isDistrictionOpen: true,
+      isErrorOpen: true,
+      isWarnOpen: true,
+      isCorrectOpen: true
     };
   }
+
   private searchInput: any;
+  private errors: any;
+  private warns: any;
+  private corrects: any;
 
   componentDidMount() {
     this.handleMounted();
@@ -344,6 +354,36 @@ class TablePage extends Component<Props, State> {
     });
   };
 
+  changeErrorPointMap = (bool: boolean) => {
+    this.setState({
+      isErrorOpen: bool
+    });
+  };
+
+  changeWarnPointMap = (bool: boolean) => {
+    this.setState({
+      isWarnOpen: bool
+    });
+  };
+
+  changeCorrectPointMap = (bool: boolean) => {
+    this.setState({
+      isCorrectOpen: bool
+    });
+  };
+
+  // 获取海量点可视化的position数据
+  getLargeMarkers = (markers) => {
+    return markers.map((i) => ({
+      position: {
+        longitude: i.start_location_x,
+        latitude: i.start_location_y
+      },
+      orderId: i.orderid,
+      tag: i.tags[0]
+    }));
+  };
+
   render = () => {
     const {
       loading,
@@ -355,7 +395,10 @@ class TablePage extends Component<Props, State> {
       center,
       rowId,
       isOperationOpen,
-      isDistrictionOpen
+      isDistrictionOpen,
+      isErrorOpen,
+      isWarnOpen,
+      isCorrectOpen
     } = this.state;
     const { homeStore } = this.props;
     const columns: any = [
@@ -425,10 +468,17 @@ class TablePage extends Component<Props, State> {
       }
     ];
 
-    const allCount = homeStore.bike_data.length;
-    const warnCount = homeStore.bike_data.filter((i) => i.tags[0] === '警告').length;
-    const errorCount = homeStore.bike_data.filter((i) => i.tags[0] === '违规').length;
-    const trueCount = homeStore.bike_data.filter((i) => i.tags[0] === '合规').length;
+    const warns = homeStore.bike_data.filter((i) => i.tags[0] === '警告');
+    const errors = homeStore.bike_data.filter((i) => i.tags[0] === '违规');
+    const corrects = homeStore.bike_data.filter((i) => i.tags[0] === '合规');
+    const warnCount = warns.length;
+    const errorCount = errors.length;
+    const trueCount = corrects.length;
+    const allCount = warnCount + errorCount + trueCount;
+    let largeMarkers = [];
+    if (isCorrectOpen) largeMarkers.push(...this.getLargeMarkers(corrects));
+    if (isErrorOpen) largeMarkers.push(...this.getLargeMarkers(errors));
+    if (isWarnOpen) largeMarkers.push(...this.getLargeMarkers(warns));
 
     return (
       <div className="table-page">
@@ -475,13 +525,37 @@ class TablePage extends Component<Props, State> {
                 defaultChecked={isOperationOpen}
                 onChange={this.changeOperation}
               />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <Tag color="#b4adff">行政区</Tag>
               <Switch
                 checkedChildren="开启"
                 unCheckedChildren="关闭"
                 defaultChecked={isDistrictionOpen}
                 onChange={this.changeDistriction}
+              />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Tag color="#dc4140">违规❌</Tag>
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                defaultChecked={isErrorOpen}
+                onChange={this.changeErrorPointMap}
+              />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Tag color="#f6be34">警告⚠️</Tag>
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                defaultChecked={isWarnOpen}
+                onChange={this.changeWarnPointMap}
+              />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Tag color="#1fb19e">合规🙆‍♂️</Tag>
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                defaultChecked={isCorrectOpen}
+                onChange={this.changeCorrectPointMap}
               />
             </div>
             <Map
@@ -494,6 +568,7 @@ class TablePage extends Component<Props, State> {
               changeSelectedRowId={this.changeSelectedRowId}
               isOperationOpen={isOperationOpen}
               isDistrictionOpen={isDistrictionOpen}
+              largeMarkers={largeMarkers}
             />
           </div>
         )}

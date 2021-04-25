@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Map, Polygon } from 'react-amap';
-import { message, Radio } from 'antd';
+import { Map, Polygon, Markers } from 'react-amap';
+import { message, Radio, Popover } from 'antd';
 
 interface Props {
   path: [][];
@@ -12,6 +12,7 @@ interface Props {
   changeSelectedRowId?: Function;
   isOperationOpen?: boolean;
   isDistrictionOpen?: boolean;
+  largeMarkers: any[];
 }
 
 interface State {
@@ -152,6 +153,23 @@ export default class MapPage extends Component<Props, State> {
     }
   };
 
+  renderMarkerLayout = (extData) => {
+    // console.log(extData);
+    let className = 'order-id-marker-null';
+    if (extData.tag === '合规') {
+      className = 'order-id-marker-correct';
+    } else if (extData.tag === '违规') {
+      className = 'order-id-marker-error';
+    } else if (extData.tag === '警告') {
+      className = 'order-id-marker-warn';
+    }
+    return (
+      <Popover content={extData.tag + '条例'} title={extData.tag + '详情'} trigger="click">
+        <div className={className}>订单id：{extData.orderId}</div>
+      </Popover>
+    );
+  };
+
   componentWillReceiveProps() {
     this.oldCenter = this.props.center;
   }
@@ -177,7 +195,8 @@ export default class MapPage extends Component<Props, State> {
       operationPath,
       center,
       isOperationOpen,
-      isDistrictionOpen
+      isDistrictionOpen,
+      largeMarkers
     } = this.props;
 
     return (
@@ -216,6 +235,7 @@ export default class MapPage extends Component<Props, State> {
               }}
             />
           ) : null}
+          <Markers useCluster={true} markers={largeMarkers} render={this.renderMarkerLayout} />
         </Map>
         <Radio.Group className="btn-group" onChange={this.handleAnimationChange}>
           <Radio.Button value="start">开始动画</Radio.Button>

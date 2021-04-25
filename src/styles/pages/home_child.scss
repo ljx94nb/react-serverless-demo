@@ -212,6 +212,46 @@
     bottom: 0;
     z-index: 999;
   }
+
+  .order-id-marker-null {
+    width: 200px;
+    height: 30px;
+    border-radius: 6px;
+    margin: 2px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #dbd8d8;
+  }
+
+  .order-id-marker-correct {
+    width: 200px;
+    height: 30px;
+    border-radius: 6px;
+    margin: 2px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #1fb19e;
+  }
+
+  .order-id-marker-warn {
+    width: 200px;
+    height: 30px;
+    border-radius: 6px;
+    margin: 2px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #f6be34;
+  }
+
+  .order-id-marker-error {
+    width: 200px;
+    height: 30px;
+    border-radius: 6px;
+    margin: 2px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #dc4140;
+  }
 }
 
 // 富文本编辑器页面
