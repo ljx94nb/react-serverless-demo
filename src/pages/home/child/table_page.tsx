@@ -279,7 +279,7 @@ class TablePage extends Component<Props, State> {
                 {tag}
               </Tag>
             ) : (
-              <Popover content={content} title={title}>
+              <Popover content={content} title={title} trigger="click">
                 <Tag color={color} key={tag}>
                   {tag}
                 </Tag>

@@ -164,7 +164,7 @@ export default class MapPage extends Component<Props, State> {
       className = 'order-id-marker-warn';
     }
     return (
-      <Popover content={extData.tag + '条例'} title={extData.tag + '详情'} trigger="click">
+      <Popover content={extData.tag + '条例'} title={extData.tag + '详情'}>
         <div className={className}>订单id：{extData.orderId}</div>
       </Popover>
     );
