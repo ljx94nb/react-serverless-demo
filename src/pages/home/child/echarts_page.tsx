@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { DatePicker, message, Tooltip } from 'antd';
+import { DatePicker, message, Tooltip, Button } from 'antd';
 import moment from 'moment';
 import { DualAxes } from '@ant-design/charts';
 import { inject, observer } from 'mobx-react';
-import { Loading, CloudWords } from '@/components';
+import { Loading, CloudWords, HotMapModel } from '@/components';
 import { useLoadHotPlaceMap } from '@/hooks';
 
 interface IProps {
@@ -15,6 +15,7 @@ const Page = (props: IProps) => {
   const [loading, setLoading] = useState(true);
   const [isSpeech, setIsSpeech] = useState(false); // 浏览器录音开启状态
   const [dateStr, setDateStr] = useState('2016-08-01');
+  const [visible, setVisible] = useState(false);
   const data = props.homeStore.line_data;
   const config = {
     data: [data, data],
@@ -164,6 +165,10 @@ const Page = (props: IProps) => {
     return numArr;
   };
 
+  const openDayHotMap = (dateStr: string) => {
+    setVisible(true);
+  };
+
   return (
     <div className="echarts-page">
       <div className="datepicker-container">
@@ -182,6 +187,9 @@ const Page = (props: IProps) => {
           <img className="audio-pic" src="/yuyin.png" alt="audio" onClick={() => handleSpeech()} />
         )} */}
       </div>
+      <Button type="primary" size="large" onClick={() => openDayHotMap(dateStr)}>
+        {dateStr} 出行人数动态热力图
+      </Button>
       <div className="line-container">
         <div className="line-map">
           <DualAxes {...config} />
@@ -196,6 +204,7 @@ const Page = (props: IProps) => {
         {loading ? <Loading /> : null}
       </div>
       <div style={{ width: '100%', height: '400px', position: 'relative' }} id="map" />
+      <HotMapModel visible={visible} setVisible={setVisible} dateStr={dateStr} />
     </div>
   );
 };

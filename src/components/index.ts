@@ -7,3 +7,4 @@ export * from './wave_component';
 export * from './loading';
 export * from './cloud_words';
 export * from './order_status';
+export * from './hot_map_model';
