@@ -33,7 +33,7 @@ export const MENU_LIST: NavItem[] = [
     key: 'index'
   },
   {
-    name: 'echarts图表',
+    name: '图表',
     key: 'echarts'
   },
   {

@@ -187,9 +187,9 @@ const Page = (props: IProps) => {
           <img className="audio-pic" src="/yuyin.png" alt="audio" onClick={() => handleSpeech()} />
         )} */}
       </div>
-      <Button type="primary" size="large" onClick={() => openDayHotMap(dateStr)}>
+      {/* <Button type="primary" size="large" onClick={() => openDayHotMap(dateStr)}>
         {dateStr} 出行人数动态热力图
-      </Button>
+      </Button> */}
       <div className="line-container">
         <div className="line-map">
           <DualAxes {...config} />
